@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "firebase": "^4.1.3"
+  },
+  "name": "firebase-sagas",
+  "version": "0.0.1",
+  "description": "A redux saga integration for firebase.",
+  "main": "index.js",
+  "repository": "https://github.com/hupe1980/firebase-sagas.git",
+  "author": "hupe1980 <hupe1980@users.noreply.github.com>",
+  "license": "MIT"
+}
