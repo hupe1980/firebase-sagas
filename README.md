@@ -6,7 +6,7 @@ A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [fireb
 ### Install with
 
 ```
-npm install firebase-saga --save
+npm install firebase-sagas --save
 
 or
 
