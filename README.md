@@ -30,6 +30,9 @@ const app = firebase.initializeApp({
 });
 
 const firebaseSagas = new FirebaseSagas(app);
+
+...
+
 function* fetchDataSaga(action) {
   try {
     const { queries, asArray } = action.payload;
