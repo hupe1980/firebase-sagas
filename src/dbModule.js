@@ -49,12 +49,11 @@ function* push(path, value) {
 /**
  * Writes multiple values to the Database at once.
  *
- * @param path
- * @param value
+ * @param values
  */
-function* update(path, data) {
-  const ref = this._firebase.database().ref(path);
-  yield call([ref, ref.update], data); //TODO:
+function* update(values) {
+  const ref = this._firebase.database().ref();
+  yield call([ref, ref.update], values);
 }
 
 /**

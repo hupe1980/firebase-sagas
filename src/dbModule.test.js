@@ -14,15 +14,11 @@ describe('database', () => {
   };
 
   const ref = {
-    off: jest.fn(),
-    on: jest.fn((eventType, callback) => {
-      subs.push({eventType, callback})
-    }),
     once: jest.fn(),
     push: jest.fn(),
     remove: jest.fn(),
     set: jest.fn(),
-    update: jest.fn()
+    update: jest.fn(),
   };
 
   afterEach(() => {
@@ -32,16 +28,15 @@ describe('database', () => {
   describe('fetch(path)', () => {
     it('works', () => {
       const path = 'testpath';
-      const val = 'testdata';
-      const snapshot = {
-        val: jest.fn(() => val)
+      const val = {
+        key: 'data'
       };
-      const iterator = dbModule.fetch.call(context, path);
-
-      expect(iterator.next().value).toEqual(call([ref, ref.once], 'value'));
-      expect(iterator.next(snapshot)).toEqual({ done: true, value: val });
-      expect(snapshot.val.mock.calls.length).toBe(1);
-      expect(snapshot.val.mock.calls[0]).toEqual([]);
+      const snapshot = {
+        val: jest.fn(() => val),
+      };
+      const gen = dbModule.fetch.call(context, path);
+      expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
+      expect(gen.next(snapshot)).toEqual({ done: true, value: val });
     });
   });
 
@@ -49,13 +44,25 @@ describe('database', () => {
     it('works', () => {
       const path = 'testpath';
       const data = 'testdata';
-      const result = {
-        key: 'testkey'
-      };
-      const iterator = dbModule.push.call(context, path, data);
+      const result = 'result';
 
-      expect(iterator.next().value).toEqual(call([ref, ref.push], data));
-      expect(iterator.next(result)).toEqual({done: true, value: result});
+      const gen = dbModule.push.call(context, path, data);
+
+      expect(gen.next().value).toEqual(call([ref, ref.push], data));
+      expect(gen.next(result)).toEqual({done: true, value: result});
+    });
+  });
+
+  describe('update(values)', () => {
+    it('works', () => {
+      const values = {};
+      values['/test1/key'] = 'test';
+      values['/test2/key'] = 'test';
+
+      const gen = dbModule.update.call(context, values);
+
+      expect(gen.next().value).toEqual(call([ref, ref.update], values));
+      expect(gen.next()).toEqual({done: true, value: undefined});
     });
   });
 

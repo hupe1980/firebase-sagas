@@ -34,9 +34,7 @@ function* signOut() {
 
 /**
  * Creates channel that will subscribe to changes
- * to the user's sign-in state. Incoming events
- * from the event source will be queued in the channel
- * until interested takers are registered.
+ * to the user's sign-in state. 
  */
 function createOnAuthStateChangedChannel() {
   const auth = this._firebase.auth();

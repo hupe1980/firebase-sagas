@@ -27,20 +27,19 @@ describe('auth', () => {
       const password = 'password';
       const user = 'user';
 
-      const iterator = authModule.signInWithEmailAndPassword.call(context, email, password);
+      const gen = authModule.signInWithEmailAndPassword.call(context, email, password);
 
-      expect(iterator.next().value)
-      .toEqual(call([auth, auth.signInWithEmailAndPassword], email, password));
-      expect(iterator.next(user)).toEqual({ done: true, value: user });
+      expect(gen.next().value).toEqual(call([auth, auth.signInWithEmailAndPassword], email, password));
+      expect(gen.next(user)).toEqual({ done: true, value: user });
     });
   });
 
   describe('signOut()', () => {
     it('works', () => {
-      const iterator = authModule.signOut.call(context);
+      const gen = authModule.signOut.call(context);
 
-      expect(iterator.next().value).toEqual(call([auth, auth.signOut]));
-      expect(iterator.next()).toEqual({ done: true, value: undefined });
+      expect(gen.next().value).toEqual(call([auth, auth.signOut]));
+      expect(gen.next()).toEqual({ done: true, value: undefined });
     });
   });
 
