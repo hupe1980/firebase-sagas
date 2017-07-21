@@ -59,4 +59,3 @@ typings/
 
 .DS_STORE
 dist
-yarn.lock
