@@ -27,7 +27,7 @@ describe('database', () => {
 
   describe('fetch(path)', () => {
     it('works', () => {
-      const path = 'testpath';
+      const path = '/path';
       const val = {
         key: 'data'
       };
@@ -42,7 +42,7 @@ describe('database', () => {
 
   describe('push(path, data)', () => {
     it('works', () => {
-      const path = 'testpath';
+      const path = '/path';
       const data = 'testdata';
       const result = 'result';
 
@@ -62,6 +62,29 @@ describe('database', () => {
       const gen = dbModule.update.call(context, values);
 
       expect(gen.next().value).toEqual(call([ref, ref.update], values));
+      expect(gen.next()).toEqual({done: true, value: undefined});
+    });
+  });
+
+  describe('set(path, value)', () => {
+    it('works', () => {
+      const path = '/path';
+      const value = { test1: 'aaa', test2: 'bbb' };
+
+      const gen = dbModule.set.call(context, path, value);
+
+      expect(gen.next().value).toEqual(call([ref, ref.set], value));
+      expect(gen.next()).toEqual({done: true, value: undefined});
+    });
+  });
+
+  describe('remove(path)', () => {
+    it('works', () => {
+      const path = '/path';
+
+      const gen = dbModule.remove.call(context, path);
+
+      expect(gen.next().value).toEqual(call([ref, ref.remove]));
       expect(gen.next()).toEqual({done: true, value: undefined});
     });
   });

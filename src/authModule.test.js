@@ -2,10 +2,7 @@ import { call } from 'redux-saga/effects';
 import authModule from './authModule';
 
 describe('auth', () => {
-  const unsubscribe = jest.fn();
-
-  const subs = [];
-
+  
   const auth = {
     signInWithEmailAndPassword: jest.fn(),
     signOut: jest.fn()

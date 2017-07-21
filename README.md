@@ -52,7 +52,6 @@ function* loginUserSaga(action) {
     const { email, password } = action.payload;
     const user = yield call(firebaseSagas.auth.signInWithEmailAndPassword, email, password);
     yield put(loginUserSuccess(user));
-    yield put(push('/')); //react-router-redux
   }
   catch(error) {
     yield put(loginUserFailure(error));
@@ -65,6 +64,7 @@ function* logoutUserSaga() {
   try {
     yield call(firebaseSagas.auth.signOut);
     yield put(logoutUserSuccess(user));
+    yield put(push('/')); //react-router-redux
   }
   catch(error) {
     yield put(logoutUserFailure(error));
