@@ -10,7 +10,7 @@ npm install firebase-saga --save
 
 or
 
-yarn add redux-saga-firebase
+yarn add firebase-sagas
 ```
 
 ### Integrate Firebase with Sagas
