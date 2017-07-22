@@ -1,42 +1,50 @@
-import { call, put, take } from 'redux-saga/effects';
-import dbModule from './dbModule';
+import { call } from 'redux-saga/effects';
+import dbModule from '../src/dbModule';
+import { mockSnapshot, mockRef, mockDatabaseContext } from './dbMocks';
 
 describe('database', () => {
-
-  const context = {
-    _firebase: {
-      database: jest.fn(() => database)
-    }
-  };
-
-  const database = {
-    ref: jest.fn(() => ref)
-  };
-
-  const ref = {
-    once: jest.fn(),
-    push: jest.fn(),
-    remove: jest.fn(),
-    set: jest.fn(),
-    update: jest.fn(),
-  };
+  const ref = mockRef();
+  const context = mockDatabaseContext(ref);
 
   afterEach(() => {
-    expect.hasAssertions()
-  })
+    expect.hasAssertions();
+  });
 
-  describe('fetch(path)', () => {
-    it('works', () => {
+  describe('fetch(path, queries = {}, asArray = false)', () => {
+    it('defaults for queries and asArray', () => {
       const path = '/path';
       const val = {
-        key: 'data'
+        key1: {
+          data: 'data1',
+        },
+        key2: {
+          data: 'data2',
+        },
       };
-      const snapshot = {
-        val: jest.fn(() => val),
-      };
+      const snapshot = mockSnapshot(val);
       const gen = dbModule.fetch.call(context, path);
       expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
       expect(gen.next(snapshot)).toEqual({ done: true, value: val });
+    });
+
+    it('asArray = true', () => {
+      const path = '/path';
+      const val = {
+        key1: {
+          data: 'data1',
+        },
+        key2: {
+          data: 'data2',
+        },
+      };
+      const expected = [
+        { key: 'key1', key1: { data: 'data1' } },
+        { key: 'key2', key2: { data: 'data2' } },
+      ];
+      const snapshot = mockSnapshot(val);
+      const gen = dbModule.fetch.call(context, path, {}, true);
+      expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
+      expect(gen.next(snapshot)).toEqual({ done: true, value: expected });
     });
   });
 
@@ -49,7 +57,7 @@ describe('database', () => {
       const gen = dbModule.push.call(context, path, data);
 
       expect(gen.next().value).toEqual(call([ref, ref.push], data));
-      expect(gen.next(result)).toEqual({done: true, value: result});
+      expect(gen.next(result)).toEqual({ done: true, value: result });
     });
   });
 
@@ -62,7 +70,7 @@ describe('database', () => {
       const gen = dbModule.update.call(context, values);
 
       expect(gen.next().value).toEqual(call([ref, ref.update], values));
-      expect(gen.next()).toEqual({done: true, value: undefined});
+      expect(gen.next()).toEqual({ done: true, value: undefined });
     });
   });
 
@@ -74,7 +82,7 @@ describe('database', () => {
       const gen = dbModule.set.call(context, path, value);
 
       expect(gen.next().value).toEqual(call([ref, ref.set], value));
-      expect(gen.next()).toEqual({done: true, value: undefined});
+      expect(gen.next()).toEqual({ done: true, value: undefined });
     });
   });
 
@@ -85,8 +93,7 @@ describe('database', () => {
       const gen = dbModule.remove.call(context, path);
 
       expect(gen.next().value).toEqual(call([ref, ref.remove]));
-      expect(gen.next()).toEqual({done: true, value: undefined});
+      expect(gen.next()).toEqual({ done: true, value: undefined });
     });
   });
-
 });

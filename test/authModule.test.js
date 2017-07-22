@@ -1,22 +1,14 @@
 import { call } from 'redux-saga/effects';
-import authModule from './authModule';
+import authModule from '../src/authModule';
+import { mockAuth, mockAuthContext } from './authMocks';
 
 describe('auth', () => {
-  
-  const auth = {
-    signInWithEmailAndPassword: jest.fn(),
-    signOut: jest.fn()
-  };
-
-  const context = {
-    _firebase: {
-      auth: jest.fn(() => auth)
-    }
-  };
+  const auth = mockAuth();
+  const context = mockAuthContext(auth);
 
   afterEach(() => {
     expect.hasAssertions();
-  })
+  });
 
   describe('signInWithEmailAndPassword(email, password)', () => {
     it('returns a user', () => {
@@ -26,7 +18,8 @@ describe('auth', () => {
 
       const gen = authModule.signInWithEmailAndPassword.call(context, email, password);
 
-      expect(gen.next().value).toEqual(call([auth, auth.signInWithEmailAndPassword], email, password));
+      expect(gen.next().value)
+        .toEqual(call([auth, auth.signInWithEmailAndPassword], email, password));
       expect(gen.next(user)).toEqual({ done: true, value: user });
     });
   });
@@ -39,5 +32,4 @@ describe('auth', () => {
       expect(gen.next()).toEqual({ done: true, value: undefined });
     });
   });
-
-})
+});

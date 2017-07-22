@@ -3,18 +3,8 @@ import authModule from './authModule';
 import dbModule from './dbModule';
 
 class FirebaseSagas {
-
-  constructor(firebase) {
-    this._firebase = firebase;
-
-    // Auth methods: firebase.auth()
-    this.auth = {
-      createOnAuthStateChangedChannel: authModule.createOnAuthStateChangedChannel.bind(this),
-      signInWithEmailAndPassword: authModule.signInWithEmailAndPassword.bind(this),
-      signOut: authModule.signOut.bind(this),
-      createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword.bind(this),
-      currentUser: authModule.currentUser.bind(this)
-    };
+  constructor(app) {
+    this.app = app;
 
     // Database methods: firebase.database()
     this.database = {
@@ -22,17 +12,25 @@ class FirebaseSagas {
       push: dbModule.push.bind(this),
       update: dbModule.update.bind(this),
       set: dbModule.set.bind(this),
-      remove: dbModule.remove.bind(this)
+      remove: dbModule.remove.bind(this),
+      sync: dbModule.sync.bind(this),
+      createEventChannel: dbModule.createEventChannel.bind(this),
     };
 
-    // Function methods
-  };
+    // Auth methods: firebase.auth()
+    this.auth = {
+      createOnAuthStateChangedChannel: authModule.createOnAuthStateChangedChannel.bind(this),
+      signInWithEmailAndPassword: authModule.signInWithEmailAndPassword.bind(this),
+      signOut: authModule.signOut.bind(this),
+      createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword.bind(this),
+      currentUser: authModule.currentUser.bind(this),
+    };
+  }
 
   static createByConfig(config) {
     const app = firebase.initializeApp(config);
     return new FirebaseSagas(app);
-  };
-
+  }
 }
 
 export default FirebaseSagas;

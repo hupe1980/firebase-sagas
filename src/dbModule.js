@@ -1,16 +1,13 @@
 import { eventChannel } from 'redux-saga';
-import { call } from 'redux-saga/effects';
+import { call, take, put } from 'redux-saga/effects';
+import { addQueries, toArray } from './dbUtils';
 
-const QUERIES_NEED_PARAMS = {
-  orderByChild: true,
-  orderByKey: false,
-  orderByPriority: false,
-  orderByValue: false,
-  limitToFirst: true,
-  limitToLast: true,
-  startAt: true,
-  endAt: true,
-  equalTo: true
+const events = {
+  VALUE: 'value',
+  CHILD_ADDED: 'child_added',
+  CHILD_REMOVED: 'child_removed',
+  CHILD_CHANGED: 'child_changed',
+  CHILD_MOVED: 'child_moved',
 };
 
 /**
@@ -21,15 +18,15 @@ const QUERIES_NEED_PARAMS = {
  * @param asArray
  * @returns {*|any}
  */
-function* fetch(path, queries={}, asArray=false) {
-  let ref = this._firebase.database().ref(path);
-  ref = _addQueries(ref, queries);
+function* fetch(path, queries = {}, asArray = false) {
+  let ref = this.app.database().ref(path);
+  ref = addQueries(ref, queries);
   const snapshot = yield call([ref, ref.once], 'value');
 
-  if (asArray === true)
-    return _toArray(snapshot);
-  else
-    return snapshot.val();
+  if (asArray === true) {
+    return toArray(snapshot);
+  }
+  return snapshot.val();
 }
 
 /**
@@ -40,7 +37,7 @@ function* fetch(path, queries={}, asArray=false) {
  * @returns {*|any}
  */
 function* push(path, value) {
-  const ref = this._firebase.database().ref(path);
+  const ref = this.app.database().ref(path);
   const result = yield call([ref, ref.push], value);
 
   return result;
@@ -52,7 +49,7 @@ function* push(path, value) {
  * @param values
  */
 function* update(values) {
-  const ref = this._firebase.database().ref();
+  const ref = this.app.database().ref();
   yield call([ref, ref.update], values);
 }
 
@@ -63,7 +60,7 @@ function* update(values) {
  * @param value
  */
 function* set(path, value) {
-  const ref = this._firebase.database().ref(path);
+  const ref = this.app.database().ref(path);
   yield call([ref, ref.set], value);
 }
 
@@ -73,36 +70,77 @@ function* set(path, value) {
  * @param path
  */
 function* remove(path) {
-  const ref = this._firebase.database().ref(path);
+  const ref = this.app.database().ref(path);
   yield call([ref, ref.remove]);
 }
 
-function _addQueries(ref, queries) {
+function* sync(path, actionCreator, event = events.VALUE) {
+  const channel = yield call(this.database.createEventChannel, path, event);
 
-  for (let query in queries) {
-      if (QUERIES_NEED_PARAMS[query]) {
-        ref = ref[query](queries[query]);
-      } else {
-        ref = ref[query]();
+  while (true) {
+    switch (event) {
+      case events.VALUE: { // Handle a new value
+        const { dataSnapshot } = yield take(channel);
+        yield put(actionCreator(dataSnapshot.val()));
+        break;
       }
+      case events.CHILD_ADDED: // Handle a new child
+      case events.CHILD_CHANGED: // Handle child data changes
+      case events.CHILD_MOVED: { // Handle child ordering changes
+        const { childSnapshot, prevChildKey } = yield take(channel);
+        yield put(actionCreator(childSnapshot, prevChildKey));
+        break;
+      }
+      case events.CHILD_REMOVED: { // Handle child removal
+        const { oldChildSnapshot } = yield take(channel);
+        yield put(actionCreator(oldChildSnapshot));
+        break;
+      }
+      default:
+        throw new Error('sync: Unknown event');
+    }
   }
-  return ref;
-};
+}
 
-function _toArray(snapshot) {
-  let array = [];
-  snapshot.forEach(function(child) {
-    const val = child.val();
-    val.key = child.key;
-    array.push(val);
-  });
-  return array;
-};
+/**
+ * @param path
+ * @param event
+ */
+function createEventChannel(path, event = events.VALUE) {
+  const ref = this.app.database().ref(path);
+
+  switch (event) {
+    case events.VALUE: // Handle a new value
+      return eventChannel((emit) => {
+        const callback = ref.on(event, dataSnapshot => emit({ dataSnapshot }));
+        return () => ref.off(event, callback); // The subscriber must return an unsubscribe function
+      });
+
+    case events.CHILD_ADDED: // Handle a new child
+    case events.CHILD_CHANGED: // Handle child data changes
+    case events.CHILD_MOVED: // Handle child ordering changes
+      return eventChannel((emit) => {
+        const callback = ref.on(event, (childSnapshot, prevChildKey) => emit({ childSnapshot, prevChildKey }));
+        return () => ref.off(event, callback); // The subscriber must return an unsubscribe function
+      });
+
+    case events.CHILD_REMOVED: // Handle child removal
+      return eventChannel((emit) => {
+        const callback = ref.on(event, oldChildSnapshot => emit({ oldChildSnapshot }));
+        return () => ref.off(event, callback); // The subscriber must return an unsubscribe function
+      });
+
+    default:
+      throw new Error('createEventChannel: Unknown event');
+  }
+}
 
 export default {
   fetch,
   push,
   update,
   set,
-  remove
+  remove,
+  sync,
+  createEventChannel,
 };

@@ -8,7 +8,7 @@ import { call } from 'redux-saga/effects';
  * @param password
  */
 function* createUserWithEmailAndPassword(email, password) {
-  const auth = this._firebase.auth();
+  const auth = this.app.auth();
   yield call([auth, auth.createUserWithEmailAndPassword], email, password);
 }
 
@@ -20,7 +20,7 @@ function* createUserWithEmailAndPassword(email, password) {
  * @returns user
  */
 function* signInWithEmailAndPassword(email, password) {
-  const auth = this._firebase.auth();
+  const auth = this.app.auth();
   return yield call([auth, auth.signInWithEmailAndPassword], email, password);
 }
 
@@ -28,23 +28,19 @@ function* signInWithEmailAndPassword(email, password) {
  * Signs out the current user.
  */
 function* signOut() {
-  const auth = this._firebase.auth();
+  const auth = this.app.auth();
   yield call([auth, auth.signOut]);
 }
 
 /**
  * Creates channel that will subscribe to changes
- * to the user's sign-in state. 
+ * to the user's sign-in state.
  */
 function createOnAuthStateChangedChannel() {
-  const auth = this._firebase.auth();
-  const channel = eventChannel(emit => {
-    const onASC = auth.onAuthStateChanged(
-      user => emit({ user }),
-      error => emit({ error })
-    );
-    return onASC;
-  });
+  const auth = this.app.auth();
+  const channel = eventChannel(emit =>
+    auth.onAuthStateChanged(user => emit({ user })),
+  );
   return channel;
 }
 
@@ -54,7 +50,7 @@ function createOnAuthStateChangedChannel() {
  * @returns user
  */
 function currentUser() {
-  return this._firebase.auth().currentUser;
+  return this.app.auth().currentUser;
 }
 
 export default {
@@ -62,5 +58,5 @@ export default {
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  currentUser
+  currentUser,
 };
