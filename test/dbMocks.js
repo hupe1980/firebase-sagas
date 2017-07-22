@@ -1,22 +1,21 @@
 export const mockRef = () => ({
-  once() { },
-  push() { },
-  remove() { },
-  set() { },
-  update() { },
+  once: jest.fn(),
+  on: jest.fn((event, callback) => { }),
+  push: jest.fn(),
+  remove: jest.fn(),
+  set: jest.fn(),
+  update: jest.fn(),
 });
 
 export const mockDatabaseContext = (ref) => {
   const context = {
     app: {
-      database() {
+      database: jest.fn(() => {
         const database = {
-          ref() {
-            return ref;
-          },
+          ref: jest.fn(() => ref),
         };
         return database;
-      },
+      }),
     },
   };
   return context;
@@ -24,18 +23,15 @@ export const mockDatabaseContext = (ref) => {
 
 export const mockSnapshot = (object) => {
   const snapshot = {
-    data: object,
-    forEach(fn) {
-      Object.keys(this.data).forEach((key) => {
+    forEach: jest.fn((fn) => {
+      Object.keys(object).forEach((key) => {
         fn({
-          val: () => ({ [key]: this.data[key] }),
+          val: () => ({ [key]: object[key] }),
           key,
         });
       });
-    },
-    val() {
-      return this.data;
-    },
+    }),
+    val: jest.fn(() => object),
   };
   return snapshot;
 };

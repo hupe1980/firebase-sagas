@@ -12,13 +12,13 @@ const QUERIES_NEED_PARAMS = {
 
 export const addQueries = (ref, queries) => {
   let tmpRef = ref;
-  for (const query in queries) {
+  Object.keys(queries).forEach((query) => {
     if (QUERIES_NEED_PARAMS[query]) {
       tmpRef = tmpRef[query](queries[query]);
     } else {
       tmpRef = tmpRef[query]();
     }
-  }
+  });
   return tmpRef;
 };
 

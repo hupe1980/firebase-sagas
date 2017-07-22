@@ -3,7 +3,7 @@ import { call, take, put } from 'redux-saga/effects';
 import { addQueries, toArray } from './dbUtils';
 
 const events = {
-  VALUE: 'value',
+  VALUE: 'value', // default
   CHILD_ADDED: 'child_added',
   CHILD_REMOVED: 'child_removed',
   CHILD_CHANGED: 'child_changed',

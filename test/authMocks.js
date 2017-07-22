@@ -1,7 +1,8 @@
 export const mockAuth = () => {
   const auth = {
-    signInWithEmailAndPassword() { },
-    signOut() { },
+    createUserWithEmailAndPassword: jest.fn(),
+    signInWithEmailAndPassword: jest.fn(),
+    signOut: jest.fn(),
   };
   return auth;
 };
@@ -9,9 +10,7 @@ export const mockAuth = () => {
 export const mockAuthContext = (auth) => {
   const context = {
     app: {
-      auth() {
-        return auth;
-      },
+      auth: jest.fn(() => auth),
     },
   };
   return context;

@@ -1,10 +1,16 @@
 import { call } from 'redux-saga/effects';
 import dbModule from '../src/dbModule';
 import { mockSnapshot, mockRef, mockDatabaseContext } from './dbMocks';
+import { mockCall, mockCallsCount } from './testUtils';
 
 describe('database', () => {
-  const ref = mockRef();
-  const context = mockDatabaseContext(ref);
+  let ref;
+  let context;
+
+  beforeEach(() => {
+    ref = mockRef();
+    context = mockDatabaseContext(ref);
+  });
 
   afterEach(() => {
     expect.hasAssertions();
@@ -94,6 +100,32 @@ describe('database', () => {
 
       expect(gen.next().value).toEqual(call([ref, ref.remove]));
       expect(gen.next()).toEqual({ done: true, value: undefined });
+    });
+  });
+
+  describe('createEventChannel(path, event)', () => {
+    it('default for event', () => {
+      const path = '/path';
+      const event = 'value';
+      dbModule.createEventChannel.call(context, path);
+
+      expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
+      expect(mockCall(ref.on)[0]).toBe(event);
+    });
+
+    it('child_added for event', () => {
+      const path = '/path';
+      const event = 'child_added';
+      dbModule.createEventChannel.call(context, path, event);
+
+      expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
+      expect(mockCall(ref.on)[0]).toBe(event);
+    });
+
+    it('unknown event -> throws error', () => {
+      const path = '/path';
+      const event = 'UNKNOWN_EVENT';
+      expect(() => { dbModule.createEventChannel.call(context, path, event); }).toThrow();
     });
   });
 });
