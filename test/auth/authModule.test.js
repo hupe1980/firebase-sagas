@@ -1,5 +1,5 @@
 import { call } from 'redux-saga/effects';
-import authModule from '../src/authModule';
+import authModule from '../../src/auth/authModule';
 import { mockAuth, mockAuthContext } from './authMocks';
 
 describe('auth', () => {

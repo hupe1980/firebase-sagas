@@ -1,5 +1,6 @@
 # firebase-sagas
-A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase](https://firebase.google.com/).
+A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
+
 
 ## Getting started
 
@@ -63,7 +64,7 @@ function* loginUserSaga(action) {
 function* logoutUserSaga() {
   try {
     yield call(firebaseSagas.auth.signOut);
-    yield put(logoutUserSuccess(user));
+    yield put(logoutUserSuccess());
     yield put(push('/')); //react-router-redux
   }
   catch(error) {
@@ -75,159 +76,215 @@ function* logoutUserSaga() {
 
 ### API
 
-## Functions
+## Modules
 
 <dl>
-<dt><a href="#createUserWithEmailAndPassword">createUserWithEmailAndPassword(email, password)</a> ⇒ <code>firebase.User</code></dt>
-<dd><p>Creates a new user account associated with the specified email address and password.</p>
+<dt><a href="#module_Constants">Constants</a></dt>
+<dd><p>Constants.</p>
 </dd>
-<dt><a href="#signInWithEmailAndPassword">signInWithEmailAndPassword(email, password)</a> ⇒ <code>firebase.User</code></dt>
-<dd><p>Signs in using an email and password.</p>
+<dt><a href="#module_database">database</a></dt>
+<dd><p>A module for database.</p>
 </dd>
-<dt><a href="#signOut">signOut()</a></dt>
-<dd><p>Signs out the current user.</p>
+<dt><a href="#module_auth">auth</a></dt>
+<dd><p>A module for auth.</p>
 </dd>
-<dt><a href="#createOnAuthStateChangedChannel">createOnAuthStateChangedChannel()</a> ⇒ <code>eventChannel</code></dt>
-<dd><p>Creates channel that will subscribe to changes
-to the user&#39;s sign-in state.</p>
-</dd>
-<dt><a href="#currentUser">currentUser()</a> ⇒ <code>firebase.User</code></dt>
-<dd><p>Returns the currently signed-in user (or null).</p>
-</dd>
-<dt><a href="#fetch">fetch(path, queries, asArray)</a> ⇒ <code>*</code> | <code>any</code></dt>
-<dd><p>Retrieve data from database just once without subscribing or listening for data changes.</p>
-</dd>
-<dt><a href="#push">push(path, value)</a> ⇒ <code>*</code> | <code>any</code></dt>
-<dd><p>Generates a new child location using a unique key and returns its Reference</p>
-</dd>
-<dt><a href="#update">update(values)</a></dt>
-<dd><p>Writes multiple values to the Database at once.</p>
-</dd>
-<dt><a href="#set">set(path, value)</a></dt>
-<dd><p>Writes data to this Database location.</p>
-</dd>
-<dt><a href="#remove">remove(path)</a></dt>
-<dd><p>Removes the data at this Database location.</p>
-</dd>
-<dt><a href="#createEventChannel">createEventChannel(path, event)</a></dt>
-<dd></dd>
 </dl>
 
-<a name="createUserWithEmailAndPassword"></a>
+## Classes
 
-## createUserWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
-Creates a new user account associated with the specified email address and password.
+<dl>
+<dt><a href="#FirebaseSagas">FirebaseSagas</a></dt>
+<dd><p>FirebaseSagas</p>
+</dd>
+<dt><a href="#Query">Query</a></dt>
+<dd><p>Query
+Query</p>
+</dd>
+</dl>
 
-**Kind**: global function  
-**Returns**: <code>firebase.User</code> - user  
+<a name="module_Constants"></a>
 
-| Param | Type |
-| --- | --- |
-| email | <code>string</code> | 
-| password | <code>string</code> | 
+## Constants
+Constants.
 
-<a name="signInWithEmailAndPassword"></a>
+<a name="module_database"></a>
 
-## signInWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
-Signs in using an email and password.
+## database
+A module for database.
 
-**Kind**: global function  
-**Returns**: <code>firebase.User</code> - user  
 
-| Param | Type |
-| --- | --- |
-| email | <code>string</code> | 
-| password | <code>string</code> | 
+* [database](#module_database)
+    * [~toArray(snapshot)](#module_database..toArray) ⇒
+    * [~fetch(path, query, asArray)](#module_database..fetch) ⇒ <code>\*</code> \| <code>any</code>
+    * [~push(path, value)](#module_database..push) ⇒ <code>\*</code> \| <code>any</code>
+    * [~update(values)](#module_database..update)
+    * [~set(path, value)](#module_database..set)
+    * [~remove(path)](#module_database..remove)
+    * [~sync(path, actionCreator, eventType)](#module_database..sync)
+    * [~createEventChannel(path, eventType)](#module_database..createEventChannel)
 
-<a name="signOut"></a>
+<a name="module_database..toArray"></a>
 
-## signOut()
-Signs out the current user.
+### database~toArray(snapshot) ⇒
+**Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: array  
 
-**Kind**: global function  
-<a name="createOnAuthStateChangedChannel"></a>
+| Param |
+| --- |
+| snapshot | 
 
-## createOnAuthStateChangedChannel() ⇒ <code>eventChannel</code>
-Creates channel that will subscribe to changes
-to the user's sign-in state.
+<a name="module_database..fetch"></a>
 
-**Kind**: global function  
-**Returns**: <code>eventChannel</code> - onAuthStateChangedChannel  
-<a name="currentUser"></a>
-
-## currentUser() ⇒ <code>firebase.User</code>
-Returns the currently signed-in user (or null).
-
-**Kind**: global function  
-**Returns**: <code>firebase.User</code> - user  
-<a name="fetch"></a>
-
-## fetch(path, queries, asArray) ⇒ <code>\*</code> \| <code>any</code>
+### database~fetch(path, query, asArray) ⇒ <code>\*</code> \| <code>any</code>
 Retrieve data from database just once without subscribing or listening for data changes.
 
-**Kind**: global function  
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
-| Param |
-| --- |
-| path | 
-| queries | 
-| asArray | 
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| query | [<code>Query</code>](#Query) | 
+| asArray |  | 
 
-<a name="push"></a>
+<a name="module_database..push"></a>
 
-## push(path, value) ⇒ <code>\*</code> \| <code>any</code>
+### database~push(path, value) ⇒ <code>\*</code> \| <code>any</code>
 Generates a new child location using a unique key and returns its Reference
 
-**Kind**: global function  
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
-| Param |
-| --- |
-| path | 
-| value | 
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| value |  | 
 
-<a name="update"></a>
+<a name="module_database..update"></a>
 
-## update(values)
+### database~update(values)
 Writes multiple values to the Database at once.
 
-**Kind**: global function  
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
 | Param |
 | --- |
 | values | 
 
-<a name="set"></a>
+<a name="module_database..set"></a>
 
-## set(path, value)
+### database~set(path, value)
 Writes data to this Database location.
 
-**Kind**: global function  
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
-| Param |
-| --- |
-| path | 
-| value | 
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| value |  | 
 
-<a name="remove"></a>
+<a name="module_database..remove"></a>
 
-## remove(path)
+### database~remove(path)
 Removes the data at this Database location.
 
-**Kind**: global function  
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
-| Param |
-| --- |
-| path | 
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
 
-<a name="createEventChannel"></a>
+<a name="module_database..sync"></a>
 
-## createEventChannel(path, event)
-**Kind**: global function  
+### database~sync(path, actionCreator, eventType)
+**Kind**: inner method of [<code>database</code>](#module_database)  
 
-| Param |
-| --- |
-| path | 
-| event | 
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| actionCreator |  | 
+| eventType | <code>string</code> | 
 
+<a name="module_database..createEventChannel"></a>
+
+### database~createEventChannel(path, eventType)
+**Kind**: inner method of [<code>database</code>](#module_database)  
+
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| eventType | <code>string</code> | 
+
+<a name="module_auth"></a>
+
+## auth
+A module for auth.
+
+
+* [auth](#module_auth)
+    * [~createUserWithEmailAndPassword(email, password)](#module_auth..createUserWithEmailAndPassword) ⇒ <code>firebase.User</code>
+    * [~signInWithEmailAndPassword(email, password)](#module_auth..signInWithEmailAndPassword) ⇒ <code>firebase.User</code>
+    * [~signOut()](#module_auth..signOut)
+    * [~createOnAuthStateChangedChannel()](#module_auth..createOnAuthStateChangedChannel) ⇒ <code>eventChannel</code>
+    * [~currentUser()](#module_auth..currentUser) ⇒ <code>firebase.User</code>
+
+<a name="module_auth..createUserWithEmailAndPassword"></a>
+
+### auth~createUserWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
+Creates a new user account associated with the specified email address and password.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type |
+| --- | --- |
+| email | <code>string</code> | 
+| password | <code>string</code> | 
+
+<a name="module_auth..signInWithEmailAndPassword"></a>
+
+### auth~signInWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
+Signs in using an email and password.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type |
+| --- | --- |
+| email | <code>string</code> | 
+| password | <code>string</code> | 
+
+<a name="module_auth..signOut"></a>
+
+### auth~signOut()
+Signs out the current user.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+<a name="module_auth..createOnAuthStateChangedChannel"></a>
+
+### auth~createOnAuthStateChangedChannel() ⇒ <code>eventChannel</code>
+Creates channel that will subscribe to changes
+to the user's sign-in state.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>eventChannel</code> - onAuthStateChangedChannel  
+<a name="module_auth..currentUser"></a>
+
+### auth~currentUser() ⇒ <code>firebase.User</code>
+Returns the currently signed-in user (or null).
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+<a name="FirebaseSagas"></a>
+
+## FirebaseSagas
+FirebaseSagas
+
+**Kind**: global class  
+<a name="Query"></a>
+
+## Query
+Query
+Query
+
+**Kind**: global class  
 
 * * *

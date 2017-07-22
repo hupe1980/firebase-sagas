@@ -1,12 +1,19 @@
 import firebase from 'firebase';
-import authModule from './authModule';
-import dbModule from './dbModule';
+import authModule from './auth/authModule';
+import dbModule from './db/dbModule';
 
+/**
+ * @class FirebaseSagas
+ * @classdesc
+ * FirebaseSagas
+ */
 class FirebaseSagas {
   constructor(app) {
     this.app = app;
 
-    // Database methods: firebase.database()
+    /**
+     * Database methods: firebase.database()
+     */
     this.database = {
       fetch: dbModule.fetch.bind(this),
       push: dbModule.push.bind(this),
@@ -17,7 +24,9 @@ class FirebaseSagas {
       createEventChannel: dbModule.createEventChannel.bind(this),
     };
 
-    // Auth methods: firebase.auth()
+    /**
+     * Auth methods: firebase.auth()
+     */
     this.auth = {
       createOnAuthStateChangedChannel: authModule.createOnAuthStateChangedChannel.bind(this),
       signInWithEmailAndPassword: authModule.signInWithEmailAndPassword.bind(this),
@@ -27,6 +36,9 @@ class FirebaseSagas {
     };
   }
 
+  /**
+   * Factory to generate FirebaseSagas by firebase-config
+   */
   static createByConfig(config) {
     const app = firebase.initializeApp(config);
     return new FirebaseSagas(app);

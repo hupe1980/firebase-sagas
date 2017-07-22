@@ -1,3 +1,7 @@
+/**
+ * A module for auth.
+ * @module auth
+ */
 import { eventChannel } from 'redux-saga';
 import { call } from 'redux-saga/effects';
 

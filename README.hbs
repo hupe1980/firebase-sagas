@@ -1,5 +1,6 @@
 # firebase-sagas
-A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase](https://firebase.google.com/).
+A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
+
 
 ## Getting started
 
@@ -63,7 +64,7 @@ function* loginUserSaga(action) {
 function* logoutUserSaga() {
   try {
     yield call(firebaseSagas.auth.signOut);
-    yield put(logoutUserSuccess(user));
+    yield put(logoutUserSuccess());
     yield put(push('/')); //react-router-redux
   }
   catch(error) {

@@ -1,15 +1,15 @@
 {
   "name": "firebase-sagas",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A redux saga integration for firebase.",
-  "main": "./dist/index.js",
+  "main": "./dist/FirebaseSagas.js",
   "repository": "https://github.com/hupe1980/firebase-sagas.git",
   "author": "hupe1980 <hupe1980@web.de>",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && babel src --out-dir dist --ignore test",
-    "docs": "jsdoc2md --configure jsdoc.json --template README.hbs --files src/*.js > README.md",
+    "docs": "jsdoc2md -f dist/*.js dist/db/*.js dist/auth/*.js -t README.hbs > README.md",
     "test": "jest"
   },
   "dependencies": {

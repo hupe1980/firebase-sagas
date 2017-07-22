@@ -1,7 +1,8 @@
 import { call } from 'redux-saga/effects';
-import dbModule from '../src/dbModule';
+import dbModule from '../../src/db/dbModule';
+import Constants from '../../src/Constants';
 import { mockSnapshot, mockRef, mockDatabaseContext } from './dbMocks';
-import { mockCall, mockCallsCount } from './testUtils';
+import { mockCall, mockCallsCount } from '../testUtils';
 
 describe('database', () => {
   let ref;
@@ -48,7 +49,7 @@ describe('database', () => {
         { key: 'key2', key2: { data: 'data2' } },
       ];
       const snapshot = mockSnapshot(val);
-      const gen = dbModule.fetch.call(context, path, {}, true);
+      const gen = dbModule.fetch.call(context, path, null, true);
       expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
       expect(gen.next(snapshot)).toEqual({ done: true, value: expected });
     });
@@ -106,7 +107,7 @@ describe('database', () => {
   describe('createEventChannel(path, event)', () => {
     it('default for event', () => {
       const path = '/path';
-      const event = 'value';
+      const event = Constants.db.DEFAULT_EVENT_TYPE;
       dbModule.createEventChannel.call(context, path);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -115,7 +116,7 @@ describe('database', () => {
 
     it('child_added for event', () => {
       const path = '/path';
-      const event = 'child_added';
+      const event = Constants.db.eventTypes.CHILD_ADDED;
       dbModule.createEventChannel.call(context, path, event);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
