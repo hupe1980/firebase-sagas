@@ -1,8 +1,10 @@
-export const mockAuth = () => {
+export const mockAuth = (currentUser = null, unsubscribe = jest.fn()) => {
   const auth = {
     createUserWithEmailAndPassword: jest.fn(),
     signInWithEmailAndPassword: jest.fn(),
     signOut: jest.fn(),
+    currentUser,
+    onAuthStateChanged: jest.fn(nextOrObserver => unsubscribe),
   };
   return auth;
 };

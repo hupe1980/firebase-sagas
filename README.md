@@ -1,7 +1,6 @@
 # firebase-sagas
 A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
 
-
 ## Getting started
 
 ### Install with
@@ -36,9 +35,11 @@ const firebaseSagas = new FirebaseSagas(app);
 
 function* fetchDataSaga(action) {
   try {
-    const { queries, asArray } = action.payload;
-    const data = yield call(firebaseSagas.database.fetch, '/data', queries, asArray);
-    //const data = yield call(firebaseSagas.database.fetch, '/data');
+    // const query = new Query();
+    // query.startAt('20').orderByKey();
+    const { query, asArray } = action.payload;
+    const data = yield call(firebaseSagas.database.fetch, '/data', query, asArray);
+    // const data = yield call(firebaseSagas.database.fetch, '/data');
     yield put(fetchDataSuccess(data));
   }
   catch(error) {
@@ -97,8 +98,7 @@ function* logoutUserSaga() {
 <dd><p>FirebaseSagas</p>
 </dd>
 <dt><a href="#Query">Query</a></dt>
-<dd><p>Query
-Query</p>
+<dd><p>Query</p>
 </dd>
 </dl>
 
@@ -114,24 +114,13 @@ A module for database.
 
 
 * [database](#module_database)
-    * [~toArray(snapshot)](#module_database..toArray) ⇒
     * [~fetch(path, query, asArray)](#module_database..fetch) ⇒ <code>\*</code> \| <code>any</code>
     * [~push(path, value)](#module_database..push) ⇒ <code>\*</code> \| <code>any</code>
     * [~update(values)](#module_database..update)
     * [~set(path, value)](#module_database..set)
     * [~remove(path)](#module_database..remove)
     * [~sync(path, actionCreator, eventType)](#module_database..sync)
-    * [~createEventChannel(path, eventType)](#module_database..createEventChannel)
-
-<a name="module_database..toArray"></a>
-
-### database~toArray(snapshot) ⇒
-**Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: array  
-
-| Param |
-| --- |
-| snapshot | 
+    * [~createOnEventChannel(path, eventType)](#module_database..createOnEventChannel)
 
 <a name="module_database..fetch"></a>
 
@@ -203,9 +192,9 @@ Removes the data at this Database location.
 | actionCreator |  | 
 | eventType | <code>string</code> | 
 
-<a name="module_database..createEventChannel"></a>
+<a name="module_database..createOnEventChannel"></a>
 
-### database~createEventChannel(path, eventType)
+### database~createOnEventChannel(path, eventType)
 **Kind**: inner method of [<code>database</code>](#module_database)  
 
 | Param | Type |
@@ -282,7 +271,6 @@ FirebaseSagas
 <a name="Query"></a>
 
 ## Query
-Query
 Query
 
 **Kind**: global class  

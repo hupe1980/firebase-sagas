@@ -9,6 +9,9 @@ export const mockRef = () => ({
 
 export const mockDatabaseContext = (ref) => {
   const context = {
+    database: {
+      createOnEventChannel: jest.fn(),
+    },
     app: {
       database: jest.fn(() => {
         const database = {

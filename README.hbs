@@ -1,7 +1,6 @@
 # firebase-sagas
 A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
 
-
 ## Getting started
 
 ### Install with
@@ -36,9 +35,11 @@ const firebaseSagas = new FirebaseSagas(app);
 
 function* fetchDataSaga(action) {
   try {
-    const { queries, asArray } = action.payload;
-    const data = yield call(firebaseSagas.database.fetch, '/data', queries, asArray);
-    //const data = yield call(firebaseSagas.database.fetch, '/data');
+    // const query = new Query();
+    // query.startAt('20').orderByKey();
+    const { query, asArray } = action.payload;
+    const data = yield call(firebaseSagas.database.fetch, '/data', query, asArray);
+    // const data = yield call(firebaseSagas.database.fetch, '/data');
     yield put(fetchDataSuccess(data));
   }
   catch(error) {

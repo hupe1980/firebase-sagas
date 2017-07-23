@@ -7,6 +7,7 @@ import { call, take, put } from 'redux-saga/effects';
 import Constants from '../Constants';
 
 /**
+ * @private
  * @param snapshot
  * @return array
  */
@@ -92,8 +93,8 @@ function* remove(path) {
  * @param actionCreator
  * @param {string} eventType
  */
-function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT_EVENT_TYPE) {
-  const channel = yield call(this.database.createEventChannel, path, eventType);
+function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT) {
+  const channel = yield call(this.database.createOnEventChannel, path, eventType);
 
   while (true) {
     switch (eventType) {
@@ -115,7 +116,7 @@ function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT_
         break;
       }
       default:
-        throw new Error('sync: Unknown event');
+        throw new Error('sync: Unknown eventType');
     }
   }
 }
@@ -124,7 +125,7 @@ function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT_
  * @param {string} path
  * @param {string} eventType
  */
-function createEventChannel(path, eventType = Constants.db.DEFAULT_EVENT_TYPE) {
+function createOnEventChannel(path, eventType = Constants.db.eventTypes.DEFAULT) {
   const ref = this.app.database().ref(path);
 
   switch (eventType) {
@@ -149,7 +150,7 @@ function createEventChannel(path, eventType = Constants.db.DEFAULT_EVENT_TYPE) {
       });
 
     default:
-      throw new Error('createEventChannel: Unknown event');
+      throw new Error('createOnEventChannel: Unknown eventType');
   }
 }
 
@@ -160,5 +161,5 @@ export default {
   set,
   remove,
   sync,
-  createEventChannel,
+  createOnEventChannel,
 };

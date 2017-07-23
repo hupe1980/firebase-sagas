@@ -1,5 +1,6 @@
 /**
  * @class Query
+ * @classdesc
  * Query
  */
 class Query {

@@ -21,7 +21,7 @@ class FirebaseSagas {
       set: dbModule.set.bind(this),
       remove: dbModule.remove.bind(this),
       sync: dbModule.sync.bind(this),
-      createEventChannel: dbModule.createEventChannel.bind(this),
+      createOnEventChannel: dbModule.createOnEventChannel.bind(this),
     };
 
     /**

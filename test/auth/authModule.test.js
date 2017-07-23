@@ -1,6 +1,7 @@
 import { call } from 'redux-saga/effects';
 import authModule from '../../src/auth/authModule';
 import { mockAuth, mockAuthContext } from './authMocks';
+import { mockCallsCount } from '../testUtils';
 
 describe('auth', () => {
   const auth = mockAuth();
@@ -41,6 +42,41 @@ describe('auth', () => {
 
       expect(gen.next().value).toEqual(call([auth, auth.signOut]));
       expect(gen.next()).toEqual({ done: true, value: undefined });
+    });
+  });
+
+  describe('createOnAuthStateChangedChannel()', () => {
+    it('works', () => {
+      authModule.createOnAuthStateChangedChannel.call(context);
+
+      expect(mockCallsCount(auth.onAuthStateChanged)).toBe(1);
+    });
+
+    it('channel.close()', () => {
+      const unsubscribe = jest.fn();
+      const localAuth = mockAuth(null, unsubscribe);
+      const localContext = mockAuthContext(localAuth);
+
+      const channel = authModule.createOnAuthStateChangedChannel.call(localContext);
+      channel.close();
+
+      expect(mockCallsCount(unsubscribe)).toBe(1);
+    });
+  });
+
+  describe('currentUser()', () => {
+    it('currentUser = null', () => {
+      const currentUser = authModule.currentUser.call(context);
+
+      expect(currentUser).toBe(null);
+    });
+
+    it('currentUser = user', () => {
+      const currentUser = { uid: '0815' };
+      const localAuth = mockAuth(currentUser);
+      const localContext = mockAuthContext(localAuth);
+
+      expect(authModule.currentUser.call(localContext)).toBe(currentUser);
     });
   });
 });
