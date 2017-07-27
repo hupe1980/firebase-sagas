@@ -58,13 +58,15 @@ describe('database', () => {
     });
   });
 
-  describe('update(values)', () => {
+  describe('update(path, values)', () => {
     it('works', () => {
-      const values = {};
-      values['/test1/key'] = 'test';
-      values['/test2/key'] = 'test';
+      // const values = {};
+      // values['/test1/key'] = 'test';
+      // values['/test2/key'] = 'test';
+      const path = '/path';
+      const values = { test: 'test' };
 
-      const gen = dbModule.update.call(context, values);
+      const gen = dbModule.update.call(context, path, values);
 
       expect(gen.next().value).toEqual(call([ref, ref.update], values));
       expect(gen.next()).toEqual({ done: true, value: undefined });
@@ -97,64 +99,64 @@ describe('database', () => {
   describe('createOnEventChannel(path, eventType)', () => {
     it('default for eventType', () => {
       const path = '/path';
-      const event = Constants.db.eventTypes.DEFAULT;
+      const eventType = Constants.db.eventTypes.VALUE;
       dbModule.createOnEventChannel.call(context, path);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
-      expect(mockCall(ref.on)[0]).toBe(event);
+      expect(mockCall(ref.on)[0]).toBe(eventType);
     });
 
     it('child_added for eventType', () => {
       const path = '/path';
-      const event = Constants.db.eventTypes.CHILD_ADDED;
-      dbModule.createOnEventChannel.call(context, path, event);
+      const eventType = Constants.db.eventTypes.CHILD_ADDED;
+      dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
-      expect(mockCall(ref.on)[0]).toBe(event);
+      expect(mockCall(ref.on)[0]).toBe(eventType);
     });
 
     it('child_changed for eventType', () => {
       const path = '/path';
-      const event = Constants.db.eventTypes.CHILD_CHANGED;
-      dbModule.createOnEventChannel.call(context, path, event);
+      const eventType = Constants.db.eventTypes.CHILD_CHANGED;
+      dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
-      expect(mockCall(ref.on)[0]).toBe(event);
+      expect(mockCall(ref.on)[0]).toBe(eventType);
     });
 
     it('child_moved for eventType', () => {
       const path = '/path';
-      const event = Constants.db.eventTypes.CHILD_MOVED;
-      dbModule.createOnEventChannel.call(context, path, event);
+      const eventType = Constants.db.eventTypes.CHILD_MOVED;
+      dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
-      expect(mockCall(ref.on)[0]).toBe(event);
+      expect(mockCall(ref.on)[0]).toBe(eventType);
     });
 
     it('child_removed for eventType', () => {
       const path = '/path';
-      const event = Constants.db.eventTypes.CHILD_REMOVED;
-      dbModule.createOnEventChannel.call(context, path, event);
+      const eventType = Constants.db.eventTypes.CHILD_REMOVED;
+      dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
-      expect(mockCall(ref.on)[0]).toBe(event);
+      expect(mockCall(ref.on)[0]).toBe(eventType);
     });
 
     it('unknown eventType -> throws error', () => {
       const path = '/path';
-      const event = 'UNKNOWN_EVENT';
-      expect(() => { dbModule.createOnEventChannel.call(context, path, event); }).toThrow();
+      const eventType = 'UNKNOWN_EVENT';
+      expect(() => { dbModule.createOnEventChannel.call(context, path, eventType); }).toThrow();
     });
   });
 
-  describe('sync(path, actionCreator, eventType)', () => {
+  describe('sync(actionCreator, path, asArray, eventType)', () => {
     it('works', () => {
       const path = '/path';
       const actionCreator = jest.fn();
 
-      const gen = dbModule.sync.call(context, path, actionCreator, Constants.db.eventTypes.DEFAULT);
+      const gen = dbModule.sync.call(context, actionCreator, path, true, Constants.db.eventTypes.VALUE);
 
-      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.DEFAULT));
+      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.VALUE));
     });
   });
 });

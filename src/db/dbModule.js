@@ -60,10 +60,11 @@ function* push(path, value) {
 /**
  * Writes multiple values to the Database at once.
  *
+ * @param path
  * @param values
  */
-function* update(values) {
-  const ref = this.app.database().ref();
+function* update(path, values) {
+  const ref = this.app.database().ref(path); 
   yield call([ref, ref.update], values);
 }
 
@@ -89,30 +90,43 @@ function* remove(path) {
 }
 
 /**
- * @param {string} path
  * @param actionCreator
+ * @param {string} path
+ * @param {boolean} asArray
  * @param {string} eventType
  */
-function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT) {
+function* sync(actionCreator, path, asArray = false, eventType = Constants.db.eventTypes.VALUE) {
   const channel = yield call(this.database.createOnEventChannel, path, eventType);
 
   while (true) {
     switch (eventType) {
       case Constants.db.eventTypes.VALUE: { // Handle a new value
         const { dataSnapshot } = yield take(channel);
-        yield put(actionCreator(dataSnapshot.val()));
+        if (asArray === true) {
+          yield put(actionCreator(toArray(dataSnapshot)));
+        } else {
+          yield put(actionCreator(dataSnapshot.val()));
+        }
         break;
       }
       case Constants.db.eventTypes.CHILD_ADDED: // Handle a new child
       case Constants.db.eventTypes.CHILD_CHANGED: // Handle child data changes
       case Constants.db.eventTypes.CHILD_MOVED: { // Handle child ordering changes
         const { childSnapshot, prevChildKey } = yield take(channel);
-        yield put(actionCreator(childSnapshot, prevChildKey));
+        if (asArray === true) {
+          yield put(actionCreator(toArray(childSnapshot), prevChildKey));
+        } else {
+          yield put(actionCreator(childSnapshot.val(), prevChildKey));
+        }
         break;
       }
       case Constants.db.eventTypes.CHILD_REMOVED: { // Handle child removal
         const { oldChildSnapshot } = yield take(channel);
-        yield put(actionCreator(oldChildSnapshot));
+        if (asArray === true) {
+          yield put(actionCreator(toArray(oldChildSnapshot)));
+        } else {
+          yield put(actionCreator(oldChildSnapshot.val()));
+        }
         break;
       }
       default:
@@ -124,8 +138,9 @@ function* sync(path, actionCreator, eventType = Constants.db.eventTypes.DEFAULT)
 /**
  * @param {string} path
  * @param {string} eventType
+ * @returns {eventChannel} onEventChannel
  */
-function createOnEventChannel(path, eventType = Constants.db.eventTypes.DEFAULT) {
+function createOnEventChannel(path, eventType = Constants.db.eventTypes.VALUE) {
   const ref = this.app.database().ref(path);
 
   switch (eventType) {

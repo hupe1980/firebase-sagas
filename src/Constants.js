@@ -5,7 +5,6 @@
 export default {
   db: {
     eventTypes: {
-      DEFAULT: 'value',
       VALUE: 'value',
       CHILD_ADDED: 'child_added',
       CHILD_REMOVED: 'child_removed',

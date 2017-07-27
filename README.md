@@ -1,6 +1,8 @@
 # firebase-sagas
 A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
 
+Try out the example [app](https://fir-sagas.firebaseapp.com/)
+
 ## Getting started
 
 ### Install with
@@ -116,11 +118,11 @@ A module for database.
 * [database](#module_database)
     * [~fetch(path, query, asArray)](#module_database..fetch) ⇒ <code>\*</code> \| <code>any</code>
     * [~push(path, value)](#module_database..push) ⇒ <code>\*</code> \| <code>any</code>
-    * [~update(values)](#module_database..update)
+    * [~update(path, values)](#module_database..update)
     * [~set(path, value)](#module_database..set)
     * [~remove(path)](#module_database..remove)
-    * [~sync(path, actionCreator, eventType)](#module_database..sync)
-    * [~createOnEventChannel(path, eventType)](#module_database..createOnEventChannel)
+    * [~sync(actionCreator, path, asArray, eventType)](#module_database..sync)
+    * [~createOnEventChannel(path, eventType)](#module_database..createOnEventChannel) ⇒ <code>eventChannel</code>
 
 <a name="module_database..fetch"></a>
 
@@ -149,13 +151,14 @@ Generates a new child location using a unique key and returns its Reference
 
 <a name="module_database..update"></a>
 
-### database~update(values)
+### database~update(path, values)
 Writes multiple values to the Database at once.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 
 | Param |
 | --- |
+| path | 
 | values | 
 
 <a name="module_database..set"></a>
@@ -183,19 +186,21 @@ Removes the data at this Database location.
 
 <a name="module_database..sync"></a>
 
-### database~sync(path, actionCreator, eventType)
+### database~sync(actionCreator, path, asArray, eventType)
 **Kind**: inner method of [<code>database</code>](#module_database)  
 
 | Param | Type |
 | --- | --- |
-| path | <code>string</code> | 
 | actionCreator |  | 
+| path | <code>string</code> | 
+| asArray | <code>boolean</code> | 
 | eventType | <code>string</code> | 
 
 <a name="module_database..createOnEventChannel"></a>
 
-### database~createOnEventChannel(path, eventType)
+### database~createOnEventChannel(path, eventType) ⇒ <code>eventChannel</code>
 **Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: <code>eventChannel</code> - onEventChannel  
 
 | Param | Type |
 | --- | --- |
