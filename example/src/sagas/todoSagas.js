@@ -1,4 +1,5 @@
 import { call, all, takeEvery } from 'redux-saga/effects';
+import { Constants } from 'firebase-sagas';
 import firebaseSagas from './firebaseSagas';
 import { types, syncTodosTrigger } from '../actions/todoActions';
 
@@ -28,7 +29,7 @@ function* setTodoStatusSaga(action) {
 
 export default function* todoRootSaga() {
   yield all([
-    firebaseSagas.database.sync(syncTodosTrigger, '/todos', true, 'value'),
+    firebaseSagas.database.sync('/todos', Constants.db.eventTypes.VALUE, syncTodosTrigger, { asArray: true }),
     takeEvery(types.SAVE_TODO.REQUEST, saveTodoSaga),
     takeEvery(types.REMOVE_TODO.REQUEST, removeTodoSaga),
     takeEvery(types.SET_TODO_STATUS.REQUEST, setTodoStatusSaga),
