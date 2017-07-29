@@ -1,8 +1,8 @@
 {
-  "apiKey": "AIzaSyA8uzh34-aYqV1ffmRY5WBi-pFF5S8IX38",
-  "authDomain": "fir-sagas.firebaseapp.com",
-  "databaseURL": "https://fir-sagas.firebaseio.com",
-  "projectId": "fir-sagas",
+  "apiKey": "",
+  "authDomain": "",
+  "databaseURL": "",
+  "projectId": "",
   "storageBucket": "",
-  "messagingSenderId": "767564915315"
+  "messagingSenderId": ""
 }
