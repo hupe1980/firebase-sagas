@@ -37,11 +37,8 @@ const firebaseSagas = new FirebaseSagas(app);
 
 function* fetchDataSaga(action) {
   try {
-    // const query = new Query();
-    // query.startAt('20').orderByKey();
-    const { query, asArray } = action.payload;
-    const data = yield call(firebaseSagas.database.fetch, '/data', query, asArray);
-    // const data = yield call(firebaseSagas.database.fetch, '/data');
+    const { query } = action.payload;
+    const data = yield call(firebaseSagas.database.fetch, '/data', { query, asArray: true });
     yield put(fetchDataSuccess(data));
   }
   catch(error) {

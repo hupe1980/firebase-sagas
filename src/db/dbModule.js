@@ -25,19 +25,19 @@ const toArray = (snapshot) => {
  * Retrieve data from database just once without subscribing or listening for data changes.
  *
  * @param {string} path
- * @param {Query} query
- * @param asArray
+ * @param {object} options
  * @returns {*|any}
  */
-function* fetch(path, query = null, asArray = false) {
+function* fetch(path, options = null) {
   let ref = this.app.database().ref(path);
 
-  if (query) {
-    ref = query.extendRefWithQuery(ref);
+  if (options && options.query) {
+    ref = options.query.extendRefWithQuery(ref);
   }
+
   const snapshot = yield call([ref, ref.once], 'value');
 
-  if (asArray === true) {
+  if (options && options.asArray === true) {
     return toArray(snapshot);
   }
   return snapshot.val();
@@ -64,7 +64,7 @@ function* push(path, value) {
  * @param values
  */
 function* update(path, values) {
-  const ref = this.app.database().ref(path); 
+  const ref = this.app.database().ref(path);
   yield call([ref, ref.update], values);
 }
 
@@ -90,19 +90,19 @@ function* remove(path) {
 }
 
 /**
- * @param actionCreator
  * @param {string} path
- * @param {boolean} asArray
  * @param {string} eventType
+ * @param actionCreator
+ * @param options
  */
-function* sync(actionCreator, path, asArray = false, eventType = Constants.db.eventTypes.VALUE) {
-  const channel = yield call(this.database.createOnEventChannel, path, eventType);
+function* sync(path, eventType, actionCreator, options = null) {
+  const channel = yield call(this.database.createOnEventChannel, path, eventType, options);
 
   while (true) {
     switch (eventType) {
       case Constants.db.eventTypes.VALUE: { // Handle a new value
         const { dataSnapshot } = yield take(channel);
-        if (asArray === true) {
+        if (options && options.asArray === true) {
           yield put(actionCreator(toArray(dataSnapshot)));
         } else {
           yield put(actionCreator(dataSnapshot.val()));
@@ -113,7 +113,7 @@ function* sync(actionCreator, path, asArray = false, eventType = Constants.db.ev
       case Constants.db.eventTypes.CHILD_CHANGED: // Handle child data changes
       case Constants.db.eventTypes.CHILD_MOVED: { // Handle child ordering changes
         const { childSnapshot, prevChildKey } = yield take(channel);
-        if (asArray === true) {
+        if (options && options.asArray === true) {
           yield put(actionCreator(toArray(childSnapshot), prevChildKey));
         } else {
           yield put(actionCreator(childSnapshot.val(), prevChildKey));
@@ -122,7 +122,7 @@ function* sync(actionCreator, path, asArray = false, eventType = Constants.db.ev
       }
       case Constants.db.eventTypes.CHILD_REMOVED: { // Handle child removal
         const { oldChildSnapshot } = yield take(channel);
-        if (asArray === true) {
+        if (options && options.asArray === true) {
           yield put(actionCreator(toArray(oldChildSnapshot)));
         } else {
           yield put(actionCreator(oldChildSnapshot.val()));
@@ -140,8 +140,12 @@ function* sync(actionCreator, path, asArray = false, eventType = Constants.db.ev
  * @param {string} eventType
  * @returns {eventChannel} onEventChannel
  */
-function createOnEventChannel(path, eventType = Constants.db.eventTypes.VALUE) {
-  const ref = this.app.database().ref(path);
+function createOnEventChannel(path, eventType, options = null) {
+  let ref = this.app.database().ref(path);
+
+  if (options && options.query) {
+    ref = options.query.extendRefWithQuery(ref);
+  }
 
   switch (eventType) {
     case Constants.db.eventTypes.VALUE: // Handle a new value

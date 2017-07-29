@@ -1,4 +1,4 @@
-import { call, put, fork, take, takeEvery, all } from 'redux-saga/effects';
+import { call, put, fork, take, takeEvery } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import firebaseSagas from './firebaseSagas';
 import {
@@ -46,8 +46,6 @@ function* syncUserSaga() {
 
 export default function* authRootSaga() {
   yield fork(syncUserSaga);
-  yield all([
-    takeEvery(types.LOGIN_USER.REQUEST, loginUserSaga),
-    takeEvery(types.LOGOUT_USER.REQUEST, logoutUserSaga),
-  ]);
+  yield takeEvery(types.LOGIN_USER.REQUEST, loginUserSaga);
+  yield takeEvery(types.LOGOUT_USER.REQUEST, logoutUserSaga);
 }

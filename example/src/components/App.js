@@ -9,7 +9,7 @@ import RequireAuth from './RequireAuth';
 const App = () => (
   <Grid>
     <Row>
-      <Col xs={8} xsOffset={2}>
+      <Col xs={12} md={8} mdOffset={2}>
         <Header />
         <Switch>
           <Route exact path="/" component={RequireAuth(TodoList)} />

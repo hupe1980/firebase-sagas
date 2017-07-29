@@ -17,8 +17,8 @@ describe('database', () => {
     expect.hasAssertions();
   });
 
-  describe('fetch(path, query = null, asArray = false)', () => {
-    it('defaults for query and asArray', () => {
+  describe('fetch(path, options = null)', () => {
+    it('null for query and asArray', () => {
       const path = '/path';
       const val = { key1: { data: 'data1' }, key2: { data: 'data2' } };
       const snapshot = mockSnapshot(val);
@@ -38,7 +38,7 @@ describe('database', () => {
       ];
       const snapshot = mockSnapshot(val);
 
-      const gen = dbModule.fetch.call(context, path, null, true);
+      const gen = dbModule.fetch.call(context, path, { asArray: true });
 
       expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
       expect(gen.next(snapshot)).toEqual({ done: true, value: expected });
@@ -97,10 +97,10 @@ describe('database', () => {
   });
 
   describe('createOnEventChannel(path, eventType)', () => {
-    it('default for eventType', () => {
+    it('value for eventType', () => {
       const path = '/path';
       const eventType = Constants.db.eventTypes.VALUE;
-      dbModule.createOnEventChannel.call(context, path);
+      dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
       expect(mockCall(ref.on)[0]).toBe(eventType);
@@ -149,14 +149,14 @@ describe('database', () => {
     });
   });
 
-  describe('sync(actionCreator, path, asArray, eventType)', () => {
+  describe('sync(path, eventType, actionCreator, options = null)', () => {
     it('works', () => {
       const path = '/path';
       const actionCreator = jest.fn();
 
-      const gen = dbModule.sync.call(context, actionCreator, path, true, Constants.db.eventTypes.VALUE);
+      const gen = dbModule.sync.call(context, path, Constants.db.eventTypes.VALUE, actionCreator, null);
 
-      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.VALUE));
+      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.VALUE, null));
     });
   });
 });

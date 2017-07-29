@@ -2,8 +2,6 @@ import firebase from 'firebase';
 import authModule from './auth/authModule';
 import dbModule from './db/dbModule';
 
-export { default as Query } from './db/Query';
-
 /**
  * @class FirebaseSagas
  * @classdesc
