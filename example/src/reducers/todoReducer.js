@@ -6,7 +6,7 @@ const INITIAL_STATE = {
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
-    case types.SYNC_TODOS.TRIGGER:
+    case types.SYNC_TODOS:
       return {
         ...state,
         list: action.payload,

@@ -9,33 +9,20 @@ const INITIAL_STATE = {
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
-    case types.LOGIN_USER.REQUEST:
-    case types.LOGOUT_USER.REQUEST:
+    case types.SIGNIN_WITH_EMAIL_AND_PASSWORD:
+    case types.SIGNOUT:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case types.LOGIN_USER.SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: true,
-      };
-    case types.LOGOUT_USER.SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: false,
-      };
-    case types.LOGIN_USER.FAILURE:
-    case types.LOGOUT_USER.FAILURE:
+    case types.AUTH_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
-    case types.SYNC_USER.TRIGGER:
+    case types.AUTH_CHANGED:
       return {
         ...state,
         loggedIn: action.payload != null,

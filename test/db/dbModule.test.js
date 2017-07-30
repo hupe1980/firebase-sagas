@@ -17,20 +17,22 @@ describe('database', () => {
     expect.hasAssertions();
   });
 
-  describe('fetch(path, options = null)', () => {
+  describe('once(path, eventType, options = null)', () => {
     it('null for query and asArray', () => {
       const path = '/path';
+      const eventType = Constants.db.eventTypes.VALUE;
       const val = { key1: { data: 'data1' }, key2: { data: 'data2' } };
       const snapshot = mockSnapshot(val);
 
-      const gen = dbModule.fetch.call(context, path);
+      const gen = dbModule.once.call(context, path, eventType);
 
-      expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
+      expect(gen.next().value).toEqual(call([ref, ref.once], eventType));
       expect(gen.next(snapshot)).toEqual({ done: true, value: val });
     });
 
     it('asArray = true', () => {
       const path = '/path';
+      const eventType = Constants.db.eventTypes.VALUE;
       const val = { key1: { data: 'data1' }, key2: { data: 'data2' } };
       const expected = [
         { key: 'key1', key1: { data: 'data1' } },
@@ -38,9 +40,9 @@ describe('database', () => {
       ];
       const snapshot = mockSnapshot(val);
 
-      const gen = dbModule.fetch.call(context, path, { asArray: true });
+      const gen = dbModule.once.call(context, path, eventType, { asArray: true });
 
-      expect(gen.next().value).toEqual(call([ref, ref.once], 'value'));
+      expect(gen.next().value).toEqual(call([ref, ref.once], eventType));
       expect(gen.next(snapshot)).toEqual({ done: true, value: expected });
     });
   });
@@ -60,9 +62,6 @@ describe('database', () => {
 
   describe('update(path, values)', () => {
     it('works', () => {
-      // const values = {};
-      // values['/test1/key'] = 'test';
-      // values['/test2/key'] = 'test';
       const path = '/path';
       const values = { test: 'test' };
 
@@ -149,12 +148,12 @@ describe('database', () => {
     });
   });
 
-  describe('sync(path, eventType, actionCreator, options = null)', () => {
+  describe('on(path, eventType, actionCreator, options = null)', () => {
     it('works', () => {
       const path = '/path';
       const actionCreator = jest.fn();
 
-      const gen = dbModule.sync.call(context, path, Constants.db.eventTypes.VALUE, actionCreator, null);
+      const gen = dbModule.on.call(context, path, Constants.db.eventTypes.VALUE, actionCreator, null);
 
       expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.VALUE, null));
     });

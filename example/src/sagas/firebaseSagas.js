@@ -1,9 +1,6 @@
-import firebase from 'firebase';
-import FirebaseSagas from 'firebase-sagas';
+import { createFirebaseSagas } from 'firebase-sagas';
 import config from '../configs/firebase.json';
 
-const app = firebase.initializeApp(config);
-
-const firebaseSagas = new FirebaseSagas(app);
+const firebaseSagas = createFirebaseSagas(config);
 
 export default firebaseSagas;

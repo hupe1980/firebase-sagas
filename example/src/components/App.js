@@ -12,8 +12,8 @@ const App = () => (
       <Col xs={12} md={8} mdOffset={2}>
         <Header />
         <Switch>
-          <Route exact path="/" component={RequireAuth(TodoList)} />
-          <Route path="/Login" component={Login} />
+          <Route exact path="/" component={Login} />
+          <Route path="/Todo" component={RequireAuth(TodoList)} />
         </Switch>
       </Col>
     </Row>

@@ -1,21 +1,16 @@
 import { createAction } from 'redux-actions';
 
 export const types = {
-  SAVE_TODO: {
-    REQUEST: 'SAVE_TODO.REQUEST',
-  },
-  REMOVE_TODO: {
-    REQUEST: 'REMOVE_TODO.REQUEST',
-  },
-  SYNC_TODOS: {
-    TRIGGER: 'SYNC_TODOS.TRIGGER',
-  },
-  SET_TODO_STATUS: {
-    REQUEST: 'SET_TODO_STATUS.REQUEST',
-  },
+  SAVE_TODO: 'SAVE_TODO',
+  REMOVE_TODO: 'REMOVE_TODO',
+  SYNC_TODOS: 'SYNC_TODOS',
+  SET_DONE_STATUS: 'SET_DONE_STATUS',
+  START_SYNC_TODO: 'START_SYNC_TODO',
 };
 
-export const saveTodoRequest = createAction(types.SAVE_TODO.REQUEST);
-export const removeTodoRequest = createAction(types.REMOVE_TODO.REQUEST);
-export const syncTodosTrigger = createAction(types.SYNC_TODOS.TRIGGER);
-export const setTodoStatusRequest = createAction(types.SET_TODO_STATUS.REQUEST);
+
+export const saveTodo = createAction(types.SAVE_TODO);
+export const removeTodo = createAction(types.REMOVE_TODO);
+export const syncTodos = createAction(types.SYNC_TODOS);
+export const setDoneStatus = createAction(types.SET_DONE_STATUS);
+export const startSyncTodo = createAction(types.START_SYNC_TODO);

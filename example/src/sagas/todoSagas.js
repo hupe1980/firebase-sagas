@@ -1,12 +1,14 @@
-import { call, all, takeEvery } from 'redux-saga/effects';
-import { Constants } from 'firebase-sagas';
+import { call, all, takeEvery, takeLatest } from 'redux-saga/effects';
 import firebaseSagas from './firebaseSagas';
-import { types, syncTodosTrigger } from '../actions/todoActions';
+import { types, syncTodos } from '../actions/todoActions';
 
 function* saveTodoSaga(action) {
-  const { task } = action.payload;
-  const todo = { task, done: false };
-  yield call(firebaseSagas.database.push, '/todos', todo);
+  try {
+    const { task } = action.payload;
+    yield call(firebaseSagas.database.push, '/todos', { task, done: false });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function* removeTodoSaga(action) {
@@ -18,7 +20,7 @@ function* removeTodoSaga(action) {
   }
 }
 
-function* setTodoStatusSaga(action) {
+function* setDoneStatusSaga(action) {
   try {
     const key = action.payload;
     yield call(firebaseSagas.database.update, `/todos/${key}`, { done: true });
@@ -27,11 +29,15 @@ function* setTodoStatusSaga(action) {
   }
 }
 
+function* startSyncTodoSaga() {
+  yield firebaseSagas.database.on('/todos', 'value', syncTodos, { asArray: true });
+}
+
 export default function* todoRootSaga() {
   yield all([
-    firebaseSagas.database.sync('/todos', Constants.db.eventTypes.VALUE, syncTodosTrigger, { asArray: true }),
-    takeEvery(types.SAVE_TODO.REQUEST, saveTodoSaga),
-    takeEvery(types.REMOVE_TODO.REQUEST, removeTodoSaga),
-    takeEvery(types.SET_TODO_STATUS.REQUEST, setTodoStatusSaga),
+    takeLatest(types.START_SYNC_TODO, startSyncTodoSaga),
+    takeEvery(types.SAVE_TODO, saveTodoSaga),
+    takeEvery(types.REMOVE_TODO, removeTodoSaga),
+    takeEvery(types.SET_DONE_STATUS, setDoneStatusSaga),
   ]);
 }

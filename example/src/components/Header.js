@@ -1,20 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { PageHeader, Button, Glyphicon } from 'react-bootstrap';
-import { logoutUserRequest } from '../actions/authActions';
+import { signOut } from '../actions/authActions';
 
 const Header = props => (
-  <div>
-    <PageHeader>
+  <PageHeader>
       firebase-sagas <small>Example</small>
-      {props.auth.loggedIn && <Button bsStyle="link" onClick={props.logoutUserRequest}>
-        <Glyphicon glyph="log-out" />
+    {props.loggedIn && <Button bsStyle="link" onClick={props.signOut}>
+      <Glyphicon glyph="log-out" />
       </Button>}
-    </PageHeader>
-
-  </div>
+  </PageHeader>
   );
 
-const mapStateToProps = ({ auth }) => ({ auth });
+Header.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
+  signOut: PropTypes.func.isRequired,
+};
 
-export default connect(mapStateToProps, { logoutUserRequest })(Header);
+const mapStateToProps = ({ auth }) => ({ loggedIn: auth.loggedIn });
+
+export default connect(mapStateToProps, { signOut })(Header);

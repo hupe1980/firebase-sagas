@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 export default function (ComposedComponent) {
-  class RequireAuth extends Component {
+  class RequireAuth extends PureComponent {
 
     componentWillMount() {
       if (!this.props.auth.loggedIn) {
-        this.props.push('/Login');
+        this.props.push('/');
       }
     }
 
     componentWillUpdate(nextProps) {
       if (!nextProps.auth.loggedIn) {
-        this.props.push('/Login');
+        this.props.push('/');
       }
     }
 

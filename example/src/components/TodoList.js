@@ -2,14 +2,13 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Well, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { FormField, SimpleForm } from './common';
-import {
-  saveTodoRequest,
-  removeTodoRequest,
-  setTodoStatusRequest,
-} from '../actions/todoActions';
-
+import { saveTodo, removeTodo, setDoneStatus, startSyncTodo } from '../actions/todoActions';
 
 class TodoList extends PureComponent {
+
+  componentWillMount() {
+    this.props.startSyncTodo();
+  }
 
   renderTask(item) {
     if (item.done) {
@@ -26,13 +25,13 @@ class TodoList extends PureComponent {
           <Button
             bsSize="xs"
             disabled={item.done}
-            onClick={() => this.props.setTodoStatusRequest(item.key)}
+            onClick={() => this.props.setDoneStatus(item.key)}
             bsStyle="success"
           >&#x2713;</Button>
           {' '}
           <Button
             bsSize="xs"
-            onClick={() => this.props.removeTodoRequest(item.key)}
+            onClick={() => this.props.removeTodo(item.key)}
             bsStyle="danger"
           >&#xff38;</Button>
         </div>
@@ -43,7 +42,7 @@ class TodoList extends PureComponent {
   render() {
     return (
       <Well>
-        <SimpleForm submitAction={this.props.saveTodoRequest.bind(this)} buttonText="Add Task">
+        <SimpleForm submitAction={this.props.saveTodo.bind(this)} buttonText="Add Task">
           <FormField type="text" name="task" label="Task" />
         </SimpleForm>
         <ListGroup>
@@ -56,4 +55,4 @@ class TodoList extends PureComponent {
 
 const mapStateToProps = ({ todo }) => ({ todo });
 
-export default connect(mapStateToProps, { saveTodoRequest, removeTodoRequest, setTodoStatusRequest })(TodoList);
+export default connect(mapStateToProps, { saveTodo, removeTodo, setDoneStatus, startSyncTodo })(TodoList);

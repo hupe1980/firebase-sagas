@@ -1,44 +1,42 @@
 # firebase-sagas
-A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/)
+A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/):
+- Authentication and realtime database support
+- Listen for value and child events (`value`, `child_added`, `child_removed`, `child_changed`, `child_moved`)
+- Snapshots as array support
+- Sorting and filtering data ( `orderByChild`, `orderByKey`, `orderByValue`, `orderByPriority`, `limitToLast`, `limitToFirst`, `startAt`, `endAt`, `equalTo`)
 
 Try out the example [app](https://fir-sagas.firebaseapp.com/)
 
-## Getting started
-
-### Install with
-
-```
+## Install
+```bash
 npm install firebase-sagas --save
-
+```
 or
-
+```bash
 yarn add firebase-sagas
 ```
 
-### Integrate Firebase with Sagas
-
+## Getting started
 ```js
+import { createFirebaseSagas } from 'firebase-sagas';
 
-import firebase from 'firebase';
-import FirebaseSagas from 'firebase-sagas';
-
-const app = firebase.initializeApp({
+const config = {
   apiKey: 'YOUR_API_KEY',
   authDomain: 'YOUR_AUTH_DOMAIN',
   databaseURL: 'YOUR_DATABASE_URL',
   projectId: 'YOUR_PROJECT_ID',
   storageBucket: 'YOUR_STORAGE_BUCKET',
   messagingSenderId: 'YOUR_MESSAGING_SENDER_ID'
-});
+};
 
-const firebaseSagas = new FirebaseSagas(app);
+const firebaseSagas = createFirebaseSagas(config);
 
 ...
 
 function* fetchDataSaga(action) {
   try {
     const { query } = action.payload;
-    const data = yield call(firebaseSagas.database.fetch, '/data', { query, asArray: true });
+    const data = yield call(firebaseSagas.database.once, '/data', 'value', { query, asArray: true });
     yield put(fetchDataSuccess(data));
   }
   catch(error) {
@@ -47,35 +45,10 @@ function* fetchDataSaga(action) {
 }
 
 ...
-
-function* loginUserSaga(action) {
-  try {
-    const { email, password } = action.payload;
-    const user = yield call(firebaseSagas.auth.signInWithEmailAndPassword, email, password);
-    yield put(loginUserSuccess(user));
-  }
-  catch(error) {
-    yield put(loginUserFailure(error));
-  }
-}
-
-...
-
-function* logoutUserSaga() {
-  try {
-    yield call(firebaseSagas.auth.signOut);
-    yield put(logoutUserSuccess());
-    yield put(push('/')); //react-router-redux
-  }
-  catch(error) {
-    yield put(logoutUserFailure(error));
-  }
-}
-
 ```
 
-### API
-
+## API
 {{>main}}
 
-* * *
+## License
+[MIT](https://github.com/hupe1980/firebase-sagas/blob/master/LICENSE)
