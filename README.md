@@ -1,3 +1,5 @@
+[![NPM version](https://img.shields.io/npm/v/firebase-sagas.svg?style=flat-square)](https://npmjs.org/package/firebase-sagas)
+[![NPM downloads](https://img.shields.io/npm/dm/firebase-sagas.svg?style=flat-square)](https://npmjs.org/package/firebase-sagas)
 # firebase-sagas
 A [redux-saga](https://github.com/redux-saga/redux-saga/) integration for [firebase (auth, database)](https://firebase.google.com/):
 - Authentication and realtime database support
@@ -208,7 +210,6 @@ Creates a new user account associated with the specified email address and passw
 
 **Kind**: inner method of [<code>auth</code>](#module_auth)  
 **Returns**: <code>firebase.User</code> - user  
-**Generator**:   
 
 | Param | Type |
 | --- | --- |
