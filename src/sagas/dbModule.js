@@ -4,7 +4,7 @@
  */
 import { eventChannel } from 'redux-saga';
 import { call, take, put } from 'redux-saga/effects';
-import Constants from '../Constants';
+import { eventTypes } from '../constants';
 
 /**
  * @private
@@ -141,7 +141,7 @@ function* on(path, eventType, actionCreator, options = null) {
 
   while (true) {
     switch (eventType) {
-      case Constants.db.eventTypes.VALUE: { // Handle a new value
+      case eventTypes.VALUE: { // Handle a new value
         const { dataSnapshot } = yield take(channel);
         if (options && options.asArray === true) {
           yield put(actionCreator(toArray(dataSnapshot)));
@@ -150,9 +150,9 @@ function* on(path, eventType, actionCreator, options = null) {
         }
         break;
       }
-      case Constants.db.eventTypes.CHILD_ADDED: // Handle a new child
-      case Constants.db.eventTypes.CHILD_CHANGED: // Handle child data changes
-      case Constants.db.eventTypes.CHILD_MOVED: { // Handle child ordering changes
+      case eventTypes.CHILD_ADDED: // Handle a new child
+      case eventTypes.CHILD_CHANGED: // Handle child data changes
+      case eventTypes.CHILD_MOVED: { // Handle child ordering changes
         const { childSnapshot, prevChildKey } = yield take(channel);
         if (options && options.asArray === true) {
           yield put(actionCreator(toArray(childSnapshot), prevChildKey));
@@ -161,7 +161,7 @@ function* on(path, eventType, actionCreator, options = null) {
         }
         break;
       }
-      case Constants.db.eventTypes.CHILD_REMOVED: { // Handle child removal
+      case eventTypes.CHILD_REMOVED: { // Handle child removal
         const { oldChildSnapshot } = yield take(channel);
         if (options && options.asArray === true) {
           yield put(actionCreator(toArray(oldChildSnapshot)));
@@ -192,21 +192,21 @@ function createOnEventChannel(path, eventType, options = null) {
   }
 
   switch (eventType) {
-    case Constants.db.eventTypes.VALUE: // Handle a new value
+    case eventTypes.VALUE: // Handle a new value
       return eventChannel((emit) => {
         const callback = ref.on(eventType, dataSnapshot => emit({ dataSnapshot }));
         return () => ref.off(eventType, callback); // The subscriber must return an unsubscribe function
       });
 
-    case Constants.db.eventTypes.CHILD_ADDED: // Handle a new child
-    case Constants.db.eventTypes.CHILD_CHANGED: // Handle child data changes
-    case Constants.db.eventTypes.CHILD_MOVED: // Handle child ordering changes
+    case eventTypes.CHILD_ADDED: // Handle a new child
+    case eventTypes.CHILD_CHANGED: // Handle child data changes
+    case eventTypes.CHILD_MOVED: // Handle child ordering changes
       return eventChannel((emit) => {
         const callback = ref.on(eventType, (childSnapshot, prevChildKey) => emit({ childSnapshot, prevChildKey }));
         return () => ref.off(eventType, callback); // The subscriber must return an unsubscribe function
       });
 
-    case Constants.db.eventTypes.CHILD_REMOVED: // Handle child removal
+    case eventTypes.CHILD_REMOVED: // Handle child removal
       return eventChannel((emit) => {
         const callback = ref.on(eventType, oldChildSnapshot => emit({ oldChildSnapshot }));
         return () => ref.off(eventType, callback); // The subscriber must return an unsubscribe function

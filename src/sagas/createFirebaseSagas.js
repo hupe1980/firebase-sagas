@@ -1,13 +1,13 @@
 import firebase from 'firebase';
-import authModule from './auth/authModule';
-import dbModule from './db/dbModule';
+import authModule from './authModule';
+import dbModule from './dbModule';
 
 /**
  * @class FirebaseSagas
  * @classdesc
  * FirebaseSagas
  */
-class FirebaseSagas {
+export class FirebaseSagas {
   constructor(app) {
     this.app = app;
 
@@ -35,6 +35,8 @@ class FirebaseSagas {
       syncUser: authModule.syncUser.bind(this),
       createOnAuthStateChangedChannel: authModule.createOnAuthStateChangedChannel.bind(this),
       signInWithEmailAndPassword: authModule.signInWithEmailAndPassword.bind(this),
+      signInAnonymously: authModule.signInAnonymously.bind(this),
+      signInWithCustomToken: authModule.signInWithCustomToken.bind(this),
       signOut: authModule.signOut.bind(this),
       createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword.bind(this),
       currentUser: authModule.currentUser.bind(this),
@@ -56,7 +58,7 @@ class FirebaseSagas {
  * @param {object} config FireBase config
  * @return {FirebaseSagas} firebaseSagas
  * @example
- * import { createFirebaseSagas } from 'firebase-sagas':
+ * import createFirebaseSagas from 'firebase-sagas':
  *
  * const config = {
  *   apiKey: 'YOUR_API_KEY',
@@ -69,6 +71,6 @@ class FirebaseSagas {
  *
  * const firebaseSagas = createFirebaseSagas(config);
  */
-export const createFirebaseSagas = config => FirebaseSagas.createByConfig(config);
+const createFirebaseSagas = config => FirebaseSagas.createByConfig(config);
 
-export default FirebaseSagas;
+export default createFirebaseSagas;

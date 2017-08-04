@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { authActions } from 'firebase-sagas';
 import { PageHeader, Button, Glyphicon } from 'react-bootstrap';
-import { signOut } from '../actions/authActions';
 
 const Header = props => (
   <PageHeader>
@@ -20,4 +20,4 @@ Header.propTypes = {
 
 const mapStateToProps = ({ auth }) => ({ loggedIn: auth.loggedIn });
 
-export default connect(mapStateToProps, { signOut })(Header);
+export default connect(mapStateToProps, authActions)(Header);

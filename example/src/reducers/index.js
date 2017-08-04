@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
 import { routerReducer as router } from 'react-router-redux';
-import auth from './authReducer';
+import { authReducer as auth } from 'firebase-sagas';
 import todo from './todoReducer';
 
 const rootReducer = combineReducers({

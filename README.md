@@ -13,14 +13,10 @@ Try out the example [app](https://fir-sagas.firebaseapp.com/)
 ```bash
 npm install firebase-sagas --save
 ```
-or
-```bash
-yarn add firebase-sagas
-```
 
 ## Getting started
 ```js
-import { createFirebaseSagas } from 'firebase-sagas';
+import createFirebaseSagas from 'firebase-sagas';
 
 const config = {
   apiKey: 'YOUR_API_KEY',
@@ -53,14 +49,14 @@ function* fetchDataSaga(action) {
 ## Modules
 
 <dl>
-<dt><a href="#module_Constants">Constants</a></dt>
+<dt><a href="#module_constants">constants</a></dt>
 <dd><p>Constants.</p>
-</dd>
-<dt><a href="#module_database">database</a></dt>
-<dd><p>A module for firebaseSagas.database</p>
 </dd>
 <dt><a href="#module_auth">auth</a></dt>
 <dd><p>A module for firebaseSagas.auth</p>
+</dd>
+<dt><a href="#module_database">database</a></dt>
+<dd><p>A module for firebaseSagas.database</p>
 </dd>
 </dl>
 
@@ -78,6 +74,9 @@ function* fetchDataSaga(action) {
 ## Functions
 
 <dl>
+<dt><a href="#createAuthSaga">createAuthSaga()</a> ⇒ <code>generator</code></dt>
+<dd><p>Creates a AuthSaga</p>
+</dd>
 <dt><a href="#createFirebaseSagas">createFirebaseSagas(config)</a> ⇒ <code><a href="#FirebaseSagas">FirebaseSagas</a></code></dt>
 <dd><p>Creates a FirebaseSagas-Instance</p>
 </dd>
@@ -86,11 +85,102 @@ function* fetchDataSaga(action) {
 </dd>
 </dl>
 
-<a name="module_Constants"></a>
+<a name="module_constants"></a>
 
-## Constants
+## constants
 Constants.
 
+<a name="module_auth"></a>
+
+## auth
+A module for firebaseSagas.auth
+
+
+* [auth](#module_auth)
+    * [~createUserWithEmailAndPassword(email, password)](#module_auth..createUserWithEmailAndPassword) ⇒ <code>firebase.User</code>
+    * [~signInWithEmailAndPassword(email, password)](#module_auth..signInWithEmailAndPassword) ⇒ <code>firebase.User</code>
+    * [~signInAnonymously()](#module_auth..signInAnonymously) ⇒ <code>firebase.User</code>
+    * [~signInWithCustomToken(token)](#module_auth..signInWithCustomToken) ⇒ <code>firebase.User</code>
+    * [~signOut()](#module_auth..signOut)
+    * [~syncUser(actionCreator)](#module_auth..syncUser)
+    * [~createOnAuthStateChangedChannel()](#module_auth..createOnAuthStateChangedChannel) ⇒ <code>eventChannel</code>
+    * [~currentUser()](#module_auth..currentUser) ⇒ <code>firebase.User</code>
+
+<a name="module_auth..createUserWithEmailAndPassword"></a>
+
+### auth~createUserWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
+Creates a new user account associated with the specified email address and password.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type |
+| --- | --- |
+| email | <code>string</code> | 
+| password | <code>string</code> | 
+
+<a name="module_auth..signInWithEmailAndPassword"></a>
+
+### auth~signInWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
+Signs in using an email and password.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type |
+| --- | --- |
+| email | <code>string</code> | 
+| password | <code>string</code> | 
+
+<a name="module_auth..signInAnonymously"></a>
+
+### auth~signInAnonymously() ⇒ <code>firebase.User</code>
+Signs in as an anonymous user.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+<a name="module_auth..signInWithCustomToken"></a>
+
+### auth~signInWithCustomToken(token) ⇒ <code>firebase.User</code>
+Signs in using a custom token.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| token | <code>string</code> | The custom token to sign in with. |
+
+<a name="module_auth..signOut"></a>
+
+### auth~signOut()
+Signs out the current user.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+<a name="module_auth..syncUser"></a>
+
+### auth~syncUser(actionCreator)
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+
+| Param | Type |
+| --- | --- |
+| actionCreator | <code>function</code> | 
+
+<a name="module_auth..createOnAuthStateChangedChannel"></a>
+
+### auth~createOnAuthStateChangedChannel() ⇒ <code>eventChannel</code>
+Creates channel that will subscribe to changes
+to the user's sign-in state.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>eventChannel</code> - onAuthStateChangedChannel  
+<a name="module_auth..currentUser"></a>
+
+### auth~currentUser() ⇒ <code>firebase.User</code>
+Returns the currently signed-in user (or null).
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
 <a name="module_database"></a>
 
 ## database
@@ -189,76 +279,6 @@ Removes the data at this Database location.
 | path | <code>string</code> | 
 | eventType | <code>string</code> | 
 
-<a name="module_auth"></a>
-
-## auth
-A module for firebaseSagas.auth
-
-
-* [auth](#module_auth)
-    * [~createUserWithEmailAndPassword(email, password)](#module_auth..createUserWithEmailAndPassword) ⇒ <code>firebase.User</code>
-    * [~signInWithEmailAndPassword(email, password)](#module_auth..signInWithEmailAndPassword) ⇒ <code>firebase.User</code>
-    * [~signOut()](#module_auth..signOut)
-    * [~syncUser(actionCreator)](#module_auth..syncUser)
-    * [~createOnAuthStateChangedChannel()](#module_auth..createOnAuthStateChangedChannel) ⇒ <code>eventChannel</code>
-    * [~currentUser()](#module_auth..currentUser) ⇒ <code>firebase.User</code>
-
-<a name="module_auth..createUserWithEmailAndPassword"></a>
-
-### auth~createUserWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
-Creates a new user account associated with the specified email address and password.
-
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-**Returns**: <code>firebase.User</code> - user  
-
-| Param | Type |
-| --- | --- |
-| email | <code>string</code> | 
-| password | <code>string</code> | 
-
-<a name="module_auth..signInWithEmailAndPassword"></a>
-
-### auth~signInWithEmailAndPassword(email, password) ⇒ <code>firebase.User</code>
-Signs in using an email and password.
-
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-**Returns**: <code>firebase.User</code> - user  
-
-| Param | Type |
-| --- | --- |
-| email | <code>string</code> | 
-| password | <code>string</code> | 
-
-<a name="module_auth..signOut"></a>
-
-### auth~signOut()
-Signs out the current user.
-
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-<a name="module_auth..syncUser"></a>
-
-### auth~syncUser(actionCreator)
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-
-| Param | Type |
-| --- | --- |
-| actionCreator | <code>function</code> | 
-
-<a name="module_auth..createOnAuthStateChangedChannel"></a>
-
-### auth~createOnAuthStateChangedChannel() ⇒ <code>eventChannel</code>
-Creates channel that will subscribe to changes
-to the user's sign-in state.
-
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-**Returns**: <code>eventChannel</code> - onAuthStateChangedChannel  
-<a name="module_auth..currentUser"></a>
-
-### auth~currentUser() ⇒ <code>firebase.User</code>
-Returns the currently signed-in user (or null).
-
-**Kind**: inner method of [<code>auth</code>](#module_auth)  
-**Returns**: <code>firebase.User</code> - user  
 <a name="FirebaseSagas"></a>
 
 ## FirebaseSagas
@@ -403,6 +423,27 @@ Resets the query
 Return the query as JSON-String
 
 **Kind**: instance method of [<code>Query</code>](#Query)  
+<a name="createAuthSaga"></a>
+
+## createAuthSaga() ⇒ <code>generator</code>
+Creates a AuthSaga
+
+**Kind**: global function  
+**Returns**: <code>generator</code> - authSaga  
+**Example**  
+```js
+import { createAuthSaga } from 'firebase-sagas';
+
+...
+
+const authSaga = createAuthSaga(firebaseSagas, {
+  signInMethods: [
+    'signInWithEmailAndPassword',
+  ],
+  onSignInSuccess: push('/Todo'), //react-router-redux
+  onSignOutSuccess: push('/'),
+});
+```
 <a name="createFirebaseSagas"></a>
 
 ## createFirebaseSagas(config) ⇒ [<code>FirebaseSagas</code>](#FirebaseSagas)
@@ -417,7 +458,7 @@ Creates a FirebaseSagas-Instance
 
 **Example**  
 ```js
-import { createFirebaseSagas } from 'firebase-sagas':
+import createFirebaseSagas from 'firebase-sagas':
 
 const config = {
   apiKey: 'YOUR_API_KEY',

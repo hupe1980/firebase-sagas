@@ -30,6 +30,27 @@ function* signInWithEmailAndPassword(email, password) {
 }
 
 /**
+ * Signs in as an anonymous user.
+ *
+ * @returns {firebase.User} user
+ */
+function* signInAnonymously() {
+  const auth = this.app.auth();
+  return yield call([auth, auth.signInAnonymously]);
+}
+
+/**
+ * Signs in using a custom token.
+ *
+ * @param {string} token The custom token to sign in with.
+ * @returns {firebase.User} user
+ */
+function* signInWithCustomToken(token) {
+  const auth = this.app.auth();
+  return yield call([auth, auth.signInWithCustomToken], token);
+}
+
+/**
  * Signs out the current user.
  */
 function* signOut() {
@@ -76,6 +97,8 @@ export default {
   createOnAuthStateChangedChannel,
   signOut,
   signInWithEmailAndPassword,
+  signInAnonymously,
+  signInWithCustomToken,
   createUserWithEmailAndPassword,
   currentUser,
 };

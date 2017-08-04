@@ -1,4 +1,4 @@
-import { createQuery } from '../../src/db/Query';
+import { createQuery } from '../../src';
 
 describe('Query', () => {
   const query = createQuery();

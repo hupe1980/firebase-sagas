@@ -1,4 +1,4 @@
-import { types } from '../actions/authActions';
+import types from '../actions';
 
 const INITIAL_STATE = {
   loading: false,
@@ -10,6 +10,8 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.SIGNIN_WITH_EMAIL_AND_PASSWORD:
+    case types.SIGNIN_ANONYMOUSLY:
+    case types.SIGNIN_WITH_CUSTOM_TOKEN:
     case types.SIGNOUT:
       return {
         ...state,
@@ -25,6 +27,7 @@ export default function (state = INITIAL_STATE, action) {
     case types.AUTH_CHANGED:
       return {
         ...state,
+        loading: false,
         loggedIn: action.payload != null,
         user: action.payload,
       };

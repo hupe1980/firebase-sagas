@@ -1,5 +1,5 @@
 import { call } from 'redux-saga/effects';
-import authModule from '../../src/auth/authModule';
+import authModule from '../../src/sagas/authModule';
 import { mockAuth, mockAuthContext } from './authMocks';
 import { mockCallsCount } from '../testUtils';
 
@@ -32,6 +32,29 @@ describe('auth', () => {
       const gen = authModule.signInWithEmailAndPassword.call(context, email, password);
 
       expect(gen.next().value).toEqual(call([auth, auth.signInWithEmailAndPassword], email, password));
+      expect(gen.next(user)).toEqual({ done: true, value: user });
+    });
+  });
+
+  describe('signInAnonymously()', () => {
+    it('returns a user', () => {
+      const user = 'user';
+
+      const gen = authModule.signInAnonymously.call(context);
+
+      expect(gen.next().value).toEqual(call([auth, auth.signInAnonymously]));
+      expect(gen.next(user)).toEqual({ done: true, value: user });
+    });
+  });
+
+  describe('signInWithCustomToken(token)', () => {
+    it('returns a user', () => {
+      const token = 'token';
+      const user = 'user';
+
+      const gen = authModule.signInWithCustomToken.call(context, token);
+
+      expect(gen.next().value).toEqual(call([auth, auth.signInWithCustomToken], token));
       expect(gen.next(user)).toEqual({ done: true, value: user });
     });
   });

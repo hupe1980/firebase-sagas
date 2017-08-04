@@ -7,8 +7,6 @@ import createHistory from 'history/createBrowserHistory';
 import { ConnectedRouter, routerMiddleware as createRouterMiddleware } from 'react-router-redux';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
-
-import './index.css';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
 import App from './components/App';

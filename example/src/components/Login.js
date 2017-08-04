@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Well } from 'react-bootstrap';
+import { authActions } from 'firebase-sagas';
 import { FormField, SimpleForm } from './common';
-import { signInWithEmailAndPassword } from '../actions/authActions';
 
 const Login = props => (
   <Well>
@@ -18,4 +18,4 @@ Login.propTypes = {
   signInWithEmailAndPassword: PropTypes.func.isRequired,
 };
 
-export default connect(null, { signInWithEmailAndPassword })(Login);
+export default connect(null, authActions)(Login);

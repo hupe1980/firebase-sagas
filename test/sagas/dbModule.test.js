@@ -1,6 +1,6 @@
 import { call } from 'redux-saga/effects';
-import dbModule from '../../src/db/dbModule';
-import Constants from '../../src/Constants';
+import dbModule from '../../src/sagas/dbModule';
+import { eventTypes } from '../../src/constants';
 import { mockSnapshot, mockRef, mockDatabaseContext } from './dbMocks';
 import { mockCall, mockCallsCount } from '../testUtils';
 
@@ -20,7 +20,7 @@ describe('database', () => {
   describe('once(path, eventType, options = null)', () => {
     it('null for query and asArray', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.VALUE;
+      const eventType = eventTypes.VALUE;
       const val = { key1: { data: 'data1' }, key2: { data: 'data2' } };
       const snapshot = mockSnapshot(val);
 
@@ -32,7 +32,7 @@ describe('database', () => {
 
     it('asArray = true', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.VALUE;
+      const eventType = eventTypes.VALUE;
       const val = { key1: { data: 'data1' }, key2: { data: 'data2' } };
       const expected = [
         { key: 'key1', key1: { data: 'data1' } },
@@ -98,7 +98,7 @@ describe('database', () => {
   describe('createOnEventChannel(path, eventType)', () => {
     it('value for eventType', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.VALUE;
+      const eventType = eventTypes.VALUE;
       dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -107,7 +107,7 @@ describe('database', () => {
 
     it('child_added for eventType', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.CHILD_ADDED;
+      const eventType = eventTypes.CHILD_ADDED;
       dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -116,7 +116,7 @@ describe('database', () => {
 
     it('child_changed for eventType', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.CHILD_CHANGED;
+      const eventType = eventTypes.CHILD_CHANGED;
       dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -125,7 +125,7 @@ describe('database', () => {
 
     it('child_moved for eventType', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.CHILD_MOVED;
+      const eventType = eventTypes.CHILD_MOVED;
       dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -134,7 +134,7 @@ describe('database', () => {
 
     it('child_removed for eventType', () => {
       const path = '/path';
-      const eventType = Constants.db.eventTypes.CHILD_REMOVED;
+      const eventType = eventTypes.CHILD_REMOVED;
       dbModule.createOnEventChannel.call(context, path, eventType);
 
       expect(mockCallsCount(ref.on)).toBe(1); // The function was called exactly once
@@ -153,9 +153,9 @@ describe('database', () => {
       const path = '/path';
       const actionCreator = jest.fn();
 
-      const gen = dbModule.on.call(context, path, Constants.db.eventTypes.VALUE, actionCreator, null);
+      const gen = dbModule.on.call(context, path, eventTypes.VALUE, actionCreator, null);
 
-      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, Constants.db.eventTypes.VALUE, null));
+      expect(gen.next().value).toEqual(call(context.database.createOnEventChannel, path, eventTypes.VALUE, null));
     });
   });
 });
