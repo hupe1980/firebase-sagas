@@ -74,7 +74,7 @@ function* fetchDataSaga(action) {
 ## Functions
 
 <dl>
-<dt><a href="#createAuthSaga">createAuthSaga()</a> ⇒ <code>generator</code></dt>
+<dt><a href="#createAuthSaga">createAuthSaga(FirebaseSagas, options)</a> ⇒ <code>generator</code></dt>
 <dd><p>Creates a AuthSaga</p>
 </dd>
 <dt><a href="#createFirebaseSagas">createFirebaseSagas(config)</a> ⇒ <code><a href="#FirebaseSagas">FirebaseSagas</a></code></dt>
@@ -101,6 +101,10 @@ A module for firebaseSagas.auth
     * [~signInWithEmailAndPassword(email, password)](#module_auth..signInWithEmailAndPassword) ⇒ <code>firebase.User</code>
     * [~signInAnonymously()](#module_auth..signInAnonymously) ⇒ <code>firebase.User</code>
     * [~signInWithCustomToken(token)](#module_auth..signInWithCustomToken) ⇒ <code>firebase.User</code>
+    * [~signInWithGoogle(scopes, customParameters)](#module_auth..signInWithGoogle) ⇒ <code>firebase.User</code>
+    * [~signInWithFacebook(scopes, customParameters)](#module_auth..signInWithFacebook) ⇒ <code>firebase.User</code>
+    * [~signInWithTwitter(scopes, customParameters)](#module_auth..signInWithTwitter) ⇒ <code>firebase.User</code>
+    * [~signInWithGithub(scopes, customParameters)](#module_auth..signInWithGithub) ⇒ <code>firebase.User</code>
     * [~signOut()](#module_auth..signOut)
     * [~syncUser(actionCreator)](#module_auth..syncUser)
     * [~createOnAuthStateChangedChannel()](#module_auth..createOnAuthStateChangedChannel) ⇒ <code>eventChannel</code>
@@ -150,6 +154,58 @@ Signs in using a custom token.
 | Param | Type | Description |
 | --- | --- | --- |
 | token | <code>string</code> | The custom token to sign in with. |
+
+<a name="module_auth..signInWithGoogle"></a>
+
+### auth~signInWithGoogle(scopes, customParameters) ⇒ <code>firebase.User</code>
+Signs in using GoogleAuthProvider.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scopes | <code>array</code> | Google OAuth scopes |
+| customParameters | <code>object</code> | The custom OAuth parameters to pass in the OAuth request |
+
+<a name="module_auth..signInWithFacebook"></a>
+
+### auth~signInWithFacebook(scopes, customParameters) ⇒ <code>firebase.User</code>
+Signs in using FacebookAuthProvider.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scopes | <code>array</code> | Facebook OAuth scopes |
+| customParameters | <code>object</code> | The custom OAuth parameters to pass in the OAuth request |
+
+<a name="module_auth..signInWithTwitter"></a>
+
+### auth~signInWithTwitter(scopes, customParameters) ⇒ <code>firebase.User</code>
+Signs in using TwitterAuthProvider.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scopes | <code>array</code> | Twitter OAuth scopes |
+| customParameters | <code>object</code> | The custom OAuth parameters to pass in the OAuth request |
+
+<a name="module_auth..signInWithGithub"></a>
+
+### auth~signInWithGithub(scopes, customParameters) ⇒ <code>firebase.User</code>
+Signs in using GithubAuthProvider.
+
+**Kind**: inner method of [<code>auth</code>](#module_auth)  
+**Returns**: <code>firebase.User</code> - user  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scopes | <code>array</code> | Github OAuth scopes |
+| customParameters | <code>object</code> | The custom OAuth parameters to pass in the OAuth request |
 
 <a name="module_auth..signOut"></a>
 
@@ -425,11 +481,17 @@ Return the query as JSON-String
 **Kind**: instance method of [<code>Query</code>](#Query)  
 <a name="createAuthSaga"></a>
 
-## createAuthSaga() ⇒ <code>generator</code>
+## createAuthSaga(FirebaseSagas, options) ⇒ <code>generator</code>
 Creates a AuthSaga
 
 **Kind**: global function  
 **Returns**: <code>generator</code> - authSaga  
+
+| Param | Type |
+| --- | --- |
+| FirebaseSagas | [<code>FirebaseSagas</code>](#FirebaseSagas) | 
+| options | <code>object</code> | 
+
 **Example**  
 ```js
 import { createAuthSaga } from 'firebase-sagas';
@@ -437,11 +499,16 @@ import { createAuthSaga } from 'firebase-sagas';
 ...
 
 const authSaga = createAuthSaga(firebaseSagas, {
-  signInMethods: [
-    'signInWithEmailAndPassword',
+ signInMethods: [
+   { type: 'signInWithEmailAndPassword' },
+   { type: 'signInWithGoogle' },
   ],
-  onSignInSuccess: push('/Todo'), //react-router-redux
-  onSignOutSuccess: push('/'),
+ onSignInSuccess: function* onSignInSuccess() {
+   yield put(push('/Todo'));
+ },
+ onSignOutSuccess: function* onSignOutSuccess() {
+   yield put(push('/'));
+ },
 });
 ```
 <a name="createFirebaseSagas"></a>

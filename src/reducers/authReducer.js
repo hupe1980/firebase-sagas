@@ -1,9 +1,9 @@
 import types from '../actions';
 
 const INITIAL_STATE = {
+  options: {},
   loading: false,
-  loggedIn: false,
-  user: null,
+  authenticated: false,
   error: null,
 };
 
@@ -11,7 +11,10 @@ export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.SIGNIN_WITH_EMAIL_AND_PASSWORD:
     case types.SIGNIN_ANONYMOUSLY:
-    case types.SIGNIN_WITH_CUSTOM_TOKEN:
+    case types.SIGNIN_WITH_GOOGLE:
+    case types.SIGNIN_WITH_FACEBOOK:
+    case types.SIGNIN_WITH_TWITTER:
+    case types.SIGNIN_WITH_GITHUB:
     case types.SIGNOUT:
       return {
         ...state,
@@ -28,8 +31,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         loading: false,
-        loggedIn: action.payload != null,
-        user: action.payload,
+        authenticated: action.payload != null,
+      };
+    case types.AUTH_INIT:
+      return {
+        ...state,
+        options: action.payload,
       };
     default:
       return state;

@@ -6,13 +6,13 @@ export default function (ComposedComponent) {
   class RequireAuth extends PureComponent {
 
     componentWillMount() {
-      if (!this.props.auth.loggedIn) {
+      if (!this.props.auth.authenticated) {
         this.props.push('/');
       }
     }
 
     componentWillUpdate(nextProps) {
-      if (!nextProps.auth.loggedIn) {
+      if (!nextProps.auth.authenticated) {
         this.props.push('/');
       }
     }

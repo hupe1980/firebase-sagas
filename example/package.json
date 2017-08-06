@@ -5,7 +5,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "firebase": "^4.1.5",
-    "firebase-sagas": "^0.1.4",
+    "firebase-sagas": "^0.1.16",
     "history": "^4.6.3",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",

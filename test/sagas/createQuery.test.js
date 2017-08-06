@@ -1,4 +1,4 @@
-import { createQuery } from '../../src';
+import createQuery from '../../src/sagas/createQuery';
 
 describe('Query', () => {
   const query = createQuery();

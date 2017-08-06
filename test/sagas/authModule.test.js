@@ -1,6 +1,6 @@
 import { call } from 'redux-saga/effects';
 import authModule from '../../src/sagas/authModule';
-import { mockAuth, mockAuthContext } from './authMocks';
+import { mockAuth, mockAuthContext, mockAuthProvider } from './authMocks';
 import { mockCallsCount } from '../testUtils';
 
 describe('auth', () => {
@@ -44,6 +44,33 @@ describe('auth', () => {
 
       expect(gen.next().value).toEqual(call([auth, auth.signInAnonymously]));
       expect(gen.next(user)).toEqual({ done: true, value: user });
+    });
+  });
+
+  describe('signInWithPopup(provider, scopes, customParameters)', () => {
+    it('without scopes & customParameters returns a user', () => {
+      const provider = mockAuthProvider();
+      const user = 'user';
+
+      const gen = authModule.signInWithPopup.call(context, provider);
+
+      expect(gen.next().value).toEqual(call([auth, auth.signInWithPopup], provider));
+      expect(gen.next({ user })).toEqual({ done: true, value: user });
+    });
+
+    it('with scopes & customParameters returns a user', () => {
+      const provider = mockAuthProvider();
+      const scopes = ['email', 'photo'];
+      const customParameters = { test: 'test' };
+      const user = 'user';
+
+      const gen = authModule.signInWithPopup.call(context, provider, scopes, customParameters);
+
+      expect(gen.next().value).toEqual(call([auth, auth.signInWithPopup], provider));
+      expect(gen.next({ user })).toEqual({ done: true, value: user });
+
+      expect(scopes).toEqual(provider.scopes);
+      expect(customParameters).toEqual(provider.customParameters);
     });
   });
 

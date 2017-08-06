@@ -1,6 +1,6 @@
 {
   "name": "firebase-sagas",
-  "version": "0.1.4",
+  "version": "0.1.16",
   "description": "A redux saga integration for firebase (auth, database).",
   "main": "./dist/index.js",
   "repository": "https://github.com/hupe1980/firebase-sagas.git",
@@ -70,7 +70,6 @@
     "firebase-database",
     "firebase-auth",
     "redux-saga",
-    "react",
     "redux"
   ]
 }

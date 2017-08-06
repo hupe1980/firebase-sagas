@@ -12,7 +12,17 @@ export const eventTypes = {
   CHILD_MOVED: 'child_moved',
 };
 
+export const signInMethods = {
+  EMAIL_AND_PASSWORD: 'signInWithEmailAndPassword',
+  ANONYMOUSLY: 'signInAnonymously',
+  GOOGLE: 'signInWithGoogle',
+  FACEBOOK: 'signInWithFacebook',
+  TWITTER: 'signInWithTwitter',
+  GITHUB: 'signInWithGithub',
+};
+
 export default {
   ACTION_PREFIX,
   eventTypes,
+  signInMethods,
 };

@@ -1,31 +1,57 @@
 import { call, all, fork, put, takeEvery } from 'redux-saga/effects';
-import { isFunction } from 'lodash';
+import { has } from 'lodash';
 import types, { authActions } from '../actions';
+import { signInMethods } from '../constants';
 
-const createSignInWithEmailAndPasswordSaga = firebaseSagas => function* signInWithEmailAndPasswordSaga(action) {
+const createSignInWithProviderSaga = (firebaseSagas, method, scopes, customParameters) => function* signInWithProviderSaga() {
   try {
-    const { email, password } = action.payload;
-    yield call(firebaseSagas.auth.signInWithEmailAndPassword, email, password);
+    yield call(firebaseSagas.auth[method], scopes, customParameters);
   } catch (error) {
     yield put(authActions.authFailure(error));
   }
 };
 
-const createSignInAnonymously = firebaseSagas => function* signInAnonymously() {
-  try {
-    yield call(firebaseSagas.auth.signInAnonymously);
-  } catch (error) {
-    yield put(authActions.authFailure(error));
-  }
-};
+const createSignInSagas = (firebaseSagas, options) => options.signInMethods.map((method) => {
+  switch (method.type) {
+    case signInMethods.ANONYMOUSLY:
+      return {
+        type: types.SIGNIN_ANONYMOUSLY,
+        saga: function* signInAnonymously() {
+          try {
+            yield call(firebaseSagas.auth.signInAnonymously);
+          } catch (error) {
+            yield put(authActions.authFailure(error));
+          }
+        },
+      };
 
-const createSignInWithCustomToken = firebaseSagas => function* signInWithCustomToken(token) {
-  try {
-    yield call(firebaseSagas.auth.signInWithCustomToken, token);
-  } catch (error) {
-    yield put(authActions.authFailure(error));
+    case signInMethods.EMAIL_AND_PASSWORD:
+      return {
+        type: types.SIGNIN_WITH_EMAIL_AND_PASSWORD,
+        saga: function* signInWithEmailAndPasswordSaga(action) {
+          try {
+            const { email, password } = action.payload;
+            yield call(firebaseSagas.auth.signInWithEmailAndPassword, email, password);
+          } catch (error) {
+            yield put(authActions.authFailure(error));
+          }
+        },
+      };
+
+    case signInMethods.GOOGLE:
+    case signInMethods.FACEBOOK:
+    case signInMethods.TWITTER:
+    case signInMethods.GITHUB:
+      return {
+        type: types.SIGNIN_WITH_GOOGLE,
+        saga: createSignInWithProviderSaga(firebaseSagas, method.type, method.scopes, method.customParameters),
+      };
+
+    default: {
+      throw new Error('Unknown signInMethod!');
+    }
   }
-};
+});
 
 const createSignOutSaga = firebaseSagas => function* signOutSaga() {
   try {
@@ -37,19 +63,10 @@ const createSignOutSaga = firebaseSagas => function* signOutSaga() {
 
 const createAuthChangedSaga = options => function* authChangedSaga(action) {
   const user = action.payload;
-  const { onSignInSuccess, onSignOutSuccess } = options;
-  if (user && onSignInSuccess) {
-    if (isFunction(onSignInSuccess)) {
-      yield put(onSignInSuccess(user)); // ActionCreator
-    } else {
-      yield put(onSignInSuccess); // Action
-    }
-  } else if (onSignOutSuccess) {
-    if (isFunction(onSignOutSuccess)) {
-      yield put(onSignOutSuccess(null)); // ActionCreator
-    } else {
-      yield put(onSignOutSuccess); // Action
-    }
+  if (user && has(options, 'onSignInSuccess')) {
+    yield options.onSignInSuccess(user);
+  } else if (has(options, 'onSignOutSuccess')) {
+    yield options.onSignOutSuccess();
   }
 };
 
@@ -60,6 +77,8 @@ const createSyncUserSaga = firebaseSagas => function* syncUserSaga() {
 /**
  * Creates a AuthSaga
  * @function
+ * @param {FirebaseSagas} FirebaseSagas
+ * @param {object} options
  * @return {generator} authSaga
  * @example
  * import { createAuthSaga } from 'firebase-sagas';
@@ -67,29 +86,33 @@ const createSyncUserSaga = firebaseSagas => function* syncUserSaga() {
  * ...
  *
  * const authSaga = createAuthSaga(firebaseSagas, {
- *   signInMethods: [
- *     'signInWithEmailAndPassword',
+ *  signInMethods: [
+ *    { type: 'signInWithEmailAndPassword' },
+ *    { type: 'signInWithGoogle' },
  *   ],
- *   onSignInSuccess: push('/Todo'), //react-router-redux
- *   onSignOutSuccess: push('/'),
+ *  onSignInSuccess: function* onSignInSuccess() {
+ *    yield put(push('/Todo'));
+ *  },
+ *  onSignOutSuccess: function* onSignOutSuccess() {
+ *    yield put(push('/'));
+ *  },
  * });
  */
 const createAuthSaga = (firebaseSagas, options) => function* authSaga() {
-  const signOutSaga = createSignOutSaga(firebaseSagas);
-  const authChangedSaga = createAuthChangedSaga(options);
-  const syncUserSaga = createSyncUserSaga(firebaseSagas);
-  const signInWithEmailAndPasswordSaga = createSignInWithEmailAndPasswordSaga(firebaseSagas);
-  const signInAnonymously = createSignInAnonymously(firebaseSagas);
-  const signInWithCustomToken = createSignInWithCustomToken(firebaseSagas);
+  yield put(authActions.authInit(options));
 
+  const syncUserSaga = createSyncUserSaga(firebaseSagas);
   yield fork(syncUserSaga);
-  yield all([
-    takeEvery(types.SIGNIN_WITH_EMAIL_AND_PASSWORD, signInWithEmailAndPasswordSaga),
-    takeEvery(types.SIGNIN_ANONYMOUSLY, signInAnonymously),
-    takeEvery(types.SIGNIN_WITH_CUSTOM_TOKEN, signInWithCustomToken),
-    takeEvery(types.SIGNOUT, signOutSaga),
-    takeEvery(types.AUTH_CHANGED, authChangedSaga),
-  ]);
+
+  const signInSagas = createSignInSagas(firebaseSagas, options);
+  const sagas = signInSagas.map(signInSaga => takeEvery(signInSaga.type, signInSaga.saga));
+
+  const signOutSaga = createSignOutSaga(firebaseSagas);
+  sagas.push(takeEvery(types.SIGNOUT, signOutSaga));
+  const authChangedSaga = createAuthChangedSaga(options);
+  sagas.push(takeEvery(types.AUTH_CHANGED, authChangedSaga));
+
+  yield all(sagas);
 };
 
 export default createAuthSaga;
