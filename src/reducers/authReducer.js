@@ -1,7 +1,6 @@
 import types from '../actions';
 
 const INITIAL_STATE = {
-  options: {},
   loading: false,
   authenticated: false,
   error: null,
@@ -32,11 +31,6 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         loading: false,
         authenticated: action.payload != null,
-      };
-    case types.AUTH_INIT:
-      return {
-        ...state,
-        options: action.payload,
       };
     default:
       return state;
